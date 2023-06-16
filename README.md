@@ -11,11 +11,11 @@ Features:
  - Environment variables debug/dump.
 
 The full parameter list can be viewed in the 
-[/public/Start-Testing.ps1](https://github.com/seabopo/psPodTester/blob/main/public/Start-Testing.ps1) 
+[/public/Start-Testing.ps1](https://github.com/seabopo/psPodTester/blob/master/public/Start-Testing.ps1) 
 file, which is the module's main entrypoint.
 
 A variety of Windows and Docker usage examples are available in the 
-[/psPodTester-tests.ps1](https://github.com/seabopo/psPodTester/blob/main/psPodTester-tests.ps1) file.
+[/psPodTester-tests.ps1](https://github.com/seabopo/psPodTester/blob/master/psPodTester-tests.ps1) file.
 
 A Windows Nano Server image of this module is available here: 
 [seabopo/pspodtester](https://hub.docker.com/repository/docker/seabopo/pspodtester/general)
