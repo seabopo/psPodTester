@@ -69,6 +69,7 @@ if ( $Test.DockerCode )
     $env:PSPOD_TEST_WebServerPort       = 8080
     $env:PSPOD_TEST_EnableWebServer     = 1
     $env:PSPOD_TEST_ShowDebugData       = 1
+    $env:PSPOD_TEST_ShowPodInfo       = 1
 
     #Remove-Item -Path Env:\PSPOD_TEST_*
 
@@ -218,7 +219,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_MemThreads=1" `
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_EnableWebServer=1" `
-                -e "PSPOD_TEST_WebServerPort=80" `
+                -e "PSPOD_TEST_WebServerPort=8080" `
                 -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
                 -p 8080:8080 `
                 seabopo/pspodtester:nanoserver-1809

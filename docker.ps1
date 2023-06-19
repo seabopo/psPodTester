@@ -59,8 +59,8 @@ Push-Location -Path $PSScriptRoot
 Import-Module $(Split-Path $Script:MyInvocation.MyCommand.Path) -Force
 
 $switchParams = @('PSPOD_TEST_NoCPU','PSPOD_TEST_NoMemory','PSPOD_TEST_NoStress','PSPOD_TEST_NoExit',
-                    'PSPOD_TEST_EnableWebServer', 'PSPOD_TEST_EnableWebServerConsoleLogs',
-                    'PSPOD_TEST_ShowDebugData')
+                  'PSPOD_TEST_EnableWebServer', 'PSPOD_TEST_EnableWebServerConsoleLogs',
+                  'PSPOD_TEST_ShowDebugData', 'PSPOD_TEST_ShowPodInfo')
 $arrayParams  = @('PSPOD_TEST_RandomizeIntervals')
 
 $params = @{}
