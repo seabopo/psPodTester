@@ -23,7 +23,7 @@ $Test = @{
     CPU              = $false
     Memory           = $false
     None             = $false
-    DockerCode       = $true # $false
+    DockerCode       = $false
     DockerContainer  = $false
 
 
@@ -62,14 +62,17 @@ if ( $Test.DockerCode )
     $env:PSPOD_TEST_MaxIntervalDuration = 33
     $env:PSPOD_TEST_CpuThreads          = 3
     $env:PSPOD_TEST_MemThreads          = 3
-    #$env:PSPOD_TEST_NoExit              = 1
+    $env:PSPOD_TEST_NoExit              = 1
     #$env:PSPOD_TEST_NoCPU               = 1
     #$env:PSPOD_TEST_NoMemory            = 1
-    #$env:PSPOD_TEST_NoStress            = 1
+    $env:PSPOD_TEST_NoStress            = 1
     $env:PSPOD_TEST_WebServerPort       = 8080
     $env:PSPOD_TEST_EnableWebServer     = 1
     $env:PSPOD_TEST_ShowDebugData       = 1
     $env:PSPOD_TEST_ShowPodInfo       = 1
+    $env:PSPOD_INFO_PodName            = 'Podname'
+    $env:PSPOD_INFO_ServerName         = 1
+    $env:PSPOD_INFO_CPUs               = 1
 
     #Remove-Item -Path Env:\PSPOD_TEST_*
 
@@ -94,6 +97,7 @@ if ( $Test.DockerContainer )
   #    autoscaling counts. Make sure to allow rest intervals that will allow all pods to
   #    scale down via the autoscaler before the stress cycle starts again.
 
+  exit
 
   # Open an interactive container that uses the PowerShell Nano Server base image.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
@@ -107,6 +111,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
                 -e "PSPOD_TEST_ShowDebugData=1" `
+                -e "PSPOD_TEST_ShowPodInfo=1" `
                 -it `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
@@ -122,7 +127,13 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
+                -e "PSPOD_TEST_ShowPodInfo=1" `
+                -e "PSPOD_TEST_CpuThreads=3" `
+                -e "PSPOD_TEST_MemThreads=3" `
                 -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
+                -e "PSPOD_INFO_PodName=1" `
+                -e "PSPOD_INFO_ServerName=1" `
+                -e "PSPOD_INFO_CPUs=1" `
                 -it --user ContainerAdministrator `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `

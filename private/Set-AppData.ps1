@@ -115,8 +115,8 @@ function Update-MemoryThreadCount
 
     if ( $testData.MemThreads -eq 0 ) {
          $testData.MemThreads = if ( $testData.NoMemory ) { 0 }
-                               elseif ($testData.PhysicalMemory -gt 16384 ) { 2 }
-                               else { 1 }
+                                elseif ($testData.PhysicalMemory -gt 16384 ) { 2 }
+                                else { 1 }
     }
 
     return $testData
@@ -129,9 +129,9 @@ function Update-CpuThreadCount
 
     if ( $testData.CpuThreads -eq 0 ) {
          $testData.CpuThreads = if     ( $testData.NoCPU )            { 0 }
-                               elseif ( $testData.LogicalCores )     { $testData.LogicalCores - $testData.MemThreads }
-                               elseif ( $testData.MemThreads -ge 2 ) { 0 }
-                               else                                 { 2 - $testData.MemThreads }
+                                elseif ( $testData.LogicalCores )     { $testData.LogicalCores - $testData.MemThreads }
+                                elseif ( $testData.MemThreads -ge 2 ) { 0 }
+                                else                                  { 2 - $testData.MemThreads }
     }
 
     return $testData
@@ -156,17 +156,17 @@ function Update-RandomizedIntervals
 
         if ( $testData.RandomizeIntervals.Contains('d') -and $testData.StressDuration -ne [int32]::MaxValue ) {
              $testData.StressDuration = Get-Random -Minimum $testData.StressDuration `
-                                                  -Maximum $testData.MaxIntervalDuration
+                                                   -Maximum $testData.MaxIntervalDuration
         }
 
         if ( $testData.RandomizeIntervals.Contains('w') ) {
              $testData.WarmUpInterval = Get-Random -Minimum $testData.WarmUpInterval `
-                                                  -Maximum $testData.MaxIntervalDuration
+                                                   -Maximum $testData.MaxIntervalDuration
         }
 
         if ( $testData.RandomizeIntervals.Contains('c') ) {
              $testData.CoolDownInterval = Get-Random -Minimum $testData.CoolDownInterval `
-                                                    -Maximum $testData.MaxIntervalDuration
+                                                     -Maximum $testData.MaxIntervalDuration
         }
 
         $testData.Add('RandomizeStress',$RandomizeIntervals.Contains('s'))

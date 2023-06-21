@@ -151,7 +151,7 @@ function Start-Testing
 
             if ( $testData.ShowPodInfo ) {
                 Write-Info -p -ps -m $testData.messages.podinfo
-                Get-Item -Path Env:\PSPOD_INFO_* | ForEach-Object {
+                Get-Item -Path Env:\PSPOD_INFO_* | Sort-Object | ForEach-Object {
                     Write-Info -m $("{0}: {1}" -f $_.Name.Replace('PSPOD_INFO_',''),$_.Value )
                 }
             }
