@@ -63,17 +63,16 @@ if ( $Test.DockerCode )
     $env:PSPOD_TEST_MemThreads          = 3
     $env:PSPOD_TEST_NoExit              = 1
     #$env:PSPOD_TEST_NoCPU               = 1
-    #$env:PSPOD_TEST_NoMemory            = 1
-    $env:PSPOD_TEST_NoStress            = 1
+    $env:PSPOD_TEST_NoMemory            = 1
+    #$env:PSPOD_TEST_NoStress            = 1
     $env:PSPOD_TEST_WebServerPort       = 8080
     $env:PSPOD_TEST_EnableWebServer     = 1
     $env:PSPOD_TEST_ShowDebugData       = 1
-    $env:PSPOD_TEST_ShowPodInfo       = 1
-    $env:PSPOD_INFO_PodName            = 'Podname'
-    $env:PSPOD_INFO_ServerName         = 1
-    $env:PSPOD_INFO_CPUs               = 1
-    $env:PSPOD_TEST_SendMessages       = 1
-    $env:PSPOD_TEST_MessagePrefix      ='UniqueMessagePrefix'
+    $env:PSPOD_TEST_ShowPodInfo         = 1
+    $env:PSPOD_INFO_PodName             = 'Podname'
+    $env:PSPOD_INFO_ServerName          = 'ServerName'
+    $env:PSPOD_TEST_SendMessages        = 1
+    $env:PSPOD_TEST_MessagePrefix       ='UniqueMessagePrefix'
 
     #Remove-Item -Path Env:\PSPOD_TEST_*
 
@@ -133,6 +132,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_ShowPodInfo=1" `
                 -e "PSPOD_TEST_CpuThreads=2" `
                 -e "PSPOD_TEST_MemThreads=2" `
+                -e "PSPOD_TEST_NoMemory=1" `
                 -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
                 -e "PSPOD_INFO_PodName=TestPod" `
                 -e "PSPOD_INFO_ServerName=TestServer" `

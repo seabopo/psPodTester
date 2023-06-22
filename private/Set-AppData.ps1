@@ -113,11 +113,12 @@ function Update-MemoryThreadCount
     [CmdletBinding()] [OutputType([PSCustomObject])]
     param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
 
-    if ( $testData.MemThreads -eq 0 ) {
-         $testData.MemThreads = if ( $testData.NoMemory ) { 0 }
-                                elseif ($testData.PhysicalMemory -gt 16384 ) { 2 }
-                                else { 1 }
-    }
+    $testData.MemThreads = if ( $testData.NoMemory ) { 0 }
+                           elseif ( $testData.MemThreads -eq 0 -and $testData.PhysicalMemory -ge 16384 ) { 2 }
+                           elseif ( $testData.MemThreads -eq 0 -and $testData.PhysicalMemory -lt 16384 ) { 1 }
+                           else { $testData.MemThreads}
+
+    if ( $testData.MemThreads -lt 0 ) { 0 }
 
     return $testData
 }
@@ -127,12 +128,14 @@ function Update-CpuThreadCount
     [CmdletBinding()] [OutputType([PSCustomObject])]
     param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
 
-    if ( $testData.CpuThreads -eq 0 ) {
-         $testData.CpuThreads = if     ( $testData.NoCPU )            { 0 }
-                                elseif ( $testData.LogicalCores )     { $testData.LogicalCores - $testData.MemThreads }
-                                elseif ( $testData.MemThreads -ge 2 ) { 0 }
-                                else                                  { 2 - $testData.MemThreads }
-    }
+    $testData.CpuThreads = if ( $testData.NoCPU ) { 0 }
+                           elseif ( $testData.CpuThreads -eq 0 ) {
+                               if ( $testData.LogicalCores ) { $testData.LogicalCores - $testData.MemThreads }
+                               else { 2 - $testData.MemThreads }
+                           }
+                           else { $testData.CpuThreads }
+
+    if ( $testData.CpuThreads -lt 0 ) { 0 }
 
     return $testData
 }

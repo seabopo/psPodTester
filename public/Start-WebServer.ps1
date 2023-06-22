@@ -52,8 +52,10 @@ function Start-WebServer
                 $stressAndRedirect = $false
                 $stop = $false
                 $kill = $false
-                $CpuThreads = $env:PSPOD_TEST_CpuThreads ??= 0
-                $MemThreads = $env:PSPOD_TEST_MemThreads ??= 0
+                $cpuThreads = $env:PSPOD_TEST_CpuThreads ??= 0
+                $memThreads = $env:PSPOD_TEST_MemThreads ??= 0
+                $noCPU      = if ( $env:PSPOD_TEST_NoCPU )    { $true } else { $false }
+                $noMem      = if ( $env:PSPOD_TEST_NoMemory ) { $true } else { $false }
 
                 switch ($uri)
                 {
@@ -65,6 +67,8 @@ function Start-WebServer
                         $env:PSPOD_TEST_RestInterval   = 0
                         $env:PSPOD_TEST_CpuThreads     = $CpuThreads
                         $env:PSPOD_TEST_MemThreads     = $MemThreads
+                        if ( $noCPU ) { $env:PSPOD_TEST_NoCPU    = 1 }
+                        if ( $noMem ) { $env:PSPOD_TEST_NoMemory = 1 }
                         $stressAndRedirect             = $true
                         break
                     }
@@ -76,6 +80,8 @@ function Start-WebServer
                         $env:PSPOD_TEST_RestInterval   = 20
                         $env:PSPOD_TEST_CpuThreads     = $CpuThreads
                         $env:PSPOD_TEST_MemThreads     = $MemThreads
+                        if ( $noCPU ) { $env:PSPOD_TEST_NoCPU    = 1 }
+                        if ( $noMem ) { $env:PSPOD_TEST_NoMemory = 1 }
                         $stressAndRedirect             = $true
                         break
                     }

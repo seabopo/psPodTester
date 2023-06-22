@@ -67,7 +67,7 @@ $params = @{}
 
 if ( $env:PSPOD_TEST_ShowDebugData ) {
     write-host "`nThe following environment variables were found:" -ForegroundColor Magenta
-    Get-Item -Path Env:* | Out-String
+    Get-Item -Path Env:* | Sort-Object | Out-String
     write-host "`nThe following environment variables will be used:" -ForegroundColor Magenta
 }
 
