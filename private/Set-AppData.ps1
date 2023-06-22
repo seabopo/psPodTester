@@ -235,6 +235,7 @@ function Add-UserMessages
         exit       = "The process is now exiting ..."
         nostress   = "The NoStress switch was detected.`r`nAll stress intervals will be skipped."
         podinfo    = "POD Information"
+        startmsgs  = "The SendMessages switch was detected.`nLogging test messages with prefix '{0}' every 15 seconds ..." -f $testData.MessagePrefix
 
         warmint    = "... Warm Interval: {0} minutes"   -f $testData.WarmUpInterval
         coolint    = "... Cool Interval: {0} minutes"   -f $testData.CoolDownInterval

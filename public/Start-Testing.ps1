@@ -101,6 +101,13 @@ function Start-Testing
     .PARAMETER WebServerPort
         OPTIONAL. INT. Alias: -wp. Sets the WebServer port. Default: 8080
 
+    .PARAMETER SendMessages
+        OPTIONAL. Switch. Alias: -sm. Logs and sends a console message every 15 seconds.
+
+    .PARAMETER MessagePrefix
+        OPTIONAL. STRING. Alias: -mp. A block of text that prefixes every message sent via the SendMessages
+        switch. Use something unique to easily find it in the log system.
+
     .EXAMPLE
 
         Start-Testing -sd 60 -wi 2 -ci 0 -si 5 -ri 5 -RandomizeIntervals d,s,r -NoExit
@@ -118,6 +125,7 @@ function Start-Testing
         [Parameter()] [Alias('rz')] [ValidateSet("d","w","c","s","r")]  [String[]] $RandomizeIntervals  = @(),
         [Parameter()] [Alias('md')] [ValidateRange(0, [int]::MaxValue)] [Int]      $MaxIntervalDuration = 1440,
         [Parameter()] [Alias('wp')] [ValidateRange(0, [int]::MaxValue)] [Int]      $WebServerPort       = 8080,
+        [Parameter()] [Alias('mp')]                                     [String]   $MessagePrefix,
         [Parameter()] [Alias('ws')]                                     [Switch]   $EnableWebServer,
         [Parameter()] [Alias('wc')]                                     [Switch]   $EnableWebServerConsoleLogs,
         [Parameter()] [Alias('nc')]                                     [Switch]   $NoCPU,
@@ -126,7 +134,8 @@ function Start-Testing
         [Parameter()] [Alias('ns')]                                     [Switch]   $NoStress,
         [Parameter()] [Alias('dd')]                                     [Switch]   $ShowDebugData,
         [Parameter()] [Alias('pi')]                                     [Switch]   $ShowPodInfo,
-        [Parameter()] [Alias('pl')]                                     [Switch]   $PersistLogs
+        [Parameter()] [Alias('pl')]                                     [Switch]   $PersistLogs,
+        [Parameter()] [Alias('sm')]                                     [Switch]   $SendMessages
     )
 
     begin
@@ -173,6 +182,8 @@ function Start-Testing
             }
 
             if ( $testData.EnableWebServer ) { Invoke-WebServer -TestData $testData }
+
+            if ( $testData.SendMessages ) { Invoke-LogMessages -MessagePrefix $testData.MessagePrefix }
 
             if ( $NoStress ) {
                 Write-Info -p -ps -m $testData.messages.nostress

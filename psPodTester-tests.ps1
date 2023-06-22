@@ -13,6 +13,7 @@ Import-Module $(Split-Path $Script:MyInvocation.MyCommand.Path) -Force
 
 $null | Out-File $( '{0}/http/app.log' -f $PSScriptRoot )
 $null | Out-File $( '{0}/http/usr.log' -f $PSScriptRoot )
+$null | Out-File $( '{0}/http/msg.log' -f $PSScriptRoot )
 
 $Test = @{
     DumpDebugData    = $false
@@ -23,10 +24,8 @@ $Test = @{
     CPU              = $false
     Memory           = $false
     None             = $false
-    DockerCode       = $false
+    DockerCode       = $false # $true #
     DockerContainer  = $false
-
-
 }
 
 # Clean-up Jobs if you manually abort
@@ -73,6 +72,8 @@ if ( $Test.DockerCode )
     $env:PSPOD_INFO_PodName            = 'Podname'
     $env:PSPOD_INFO_ServerName         = 1
     $env:PSPOD_INFO_CPUs               = 1
+    $env:PSPOD_TEST_SendMessages       = 1
+    $env:PSPOD_TEST_MessagePrefix      ='UniqueMessagePrefix'
 
     #Remove-Item -Path Env:\PSPOD_TEST_*
 
@@ -125,15 +126,16 @@ if ( $Test.DockerContainer )
   # not generate any load.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_TEST_EnableWebServer=1" `
+                -e "PSPOD_TEST_SendMessages=1" `
+                -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
                 -e "PSPOD_TEST_ShowPodInfo=1" `
-                -e "PSPOD_TEST_CpuThreads=3" `
-                -e "PSPOD_TEST_MemThreads=3" `
+                -e "PSPOD_TEST_CpuThreads=2" `
+                -e "PSPOD_TEST_MemThreads=2" `
                 -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
-                -e "PSPOD_INFO_PodName=1" `
-                -e "PSPOD_INFO_ServerName=1" `
-                -e "PSPOD_INFO_CPUs=1" `
+                -e "PSPOD_INFO_PodName=TestPod" `
+                -e "PSPOD_INFO_ServerName=TestServer" `
                 -it --user ContainerAdministrator `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `

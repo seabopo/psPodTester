@@ -14,6 +14,7 @@ Set-Variable -Scope 'Local' -Name 'MODULE_ROOT' -Value $PSScriptRoot
 Set-Variable -Scope 'Local' -Name 'WS_ENABLED'      -Value $false
 Set-Variable -Scope 'Local' -Name 'WS_APP_LOG_PATH' -Value $( '{0}/http/app.log'     -f $PSScriptRoot )
 Set-Variable -Scope 'Local' -Name 'WS_USR_LOG_PATH' -Value $( '{0}/http/usr.log'     -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_MSG_LOG_PATH' -Value $( '{0}/http/msg.log'     -f $PSScriptRoot )
 Set-Variable -Scope 'Local' -Name 'WS_HEADER_PATH'  -Value $( '{0}/http/header.html' -f $PSScriptRoot )
 Set-Variable -Scope 'Local' -Name 'WS_FOOTER_PATH'  -Value $( '{0}/http/footer.html' -f $PSScriptRoot )
 Set-Variable -Scope 'Local' -Name 'WS_START_PATH'   -Value $( '{0}/webserver.ps1'    -f $PSScriptRoot )

@@ -79,19 +79,6 @@ function Start-WebServer
                         $stressAndRedirect             = $true
                         break
                     }
-                    "GET /stressrnd" {
-                        Remove-Item -Path Env:\PSPOD_TEST_*
-                        $env:PSPOD_TEST_WarmUpInterval      = 0
-                        $env:PSPOD_TEST_StressDuration      = 240
-                        $env:PSPOD_TEST_StressInterval      = 1
-                        $env:PSPOD_TEST_RestInterval        = 1
-                        $env:PSPOD_TEST_MaxIntervalDuration = 60
-                        $env:PSPOD_TEST_RandomizeIntervals  = "s,r"
-                        $env:PSPOD_TEST_CpuThreads          = $CpuThreads
-                        $env:PSPOD_TEST_MemThreads          = $MemThreads
-                        $stressAndRedirect                  = $true
-                        break
-                    }
                     "GET /break" {
                         Remove-Item -Path Env:\PSPOD_TEST_*
                         $env:PSPOD_TEST_WarmUpInterval      = 0
@@ -105,6 +92,7 @@ function Start-WebServer
                     }
                     "GET /userlog" { $contentPath = $WS_USR_LOG_PATH; break }
                     "GET /applog"  { $contentPath = $WS_APP_LOG_PATH; break }
+                    "GET /msglog"  { $contentPath = $WS_MSG_LOG_PATH; break }
                     "GET /stop"    { $stop = $true; break }
                     "GET /kill"    { $kill = $true; break }
                     default        { $contentPath = $WS_APP_LOG_PATH; break }
