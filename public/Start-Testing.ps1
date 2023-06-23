@@ -108,6 +108,9 @@ function Start-Testing
         OPTIONAL. STRING. Alias: -mp. A block of text that prefixes every message sent via the SendMessages
         switch. Use something unique to easily find it in the log system.
 
+    .PARAMETER EnableConsoleLogs
+        OPTIONAL. Switch. Alias: -cl. Send the web server user access logs and the message logs to standard out.
+
     .EXAMPLE
 
         Start-Testing -sd 60 -wi 2 -ci 0 -si 5 -ri 5 -RandomizeIntervals d,s,r -NoExit
@@ -127,7 +130,7 @@ function Start-Testing
         [Parameter()] [Alias('wp')] [ValidateRange(0, [int]::MaxValue)] [Int]      $WebServerPort       = 8080,
         [Parameter()] [Alias('mp')]                                     [String]   $MessagePrefix,
         [Parameter()] [Alias('ws')]                                     [Switch]   $EnableWebServer,
-        [Parameter()] [Alias('wc')]                                     [Switch]   $EnableWebServerConsoleLogs,
+        [Parameter()] [Alias('cl')]                                     [Switch]   $EnableConsoleLogs,
         [Parameter()] [Alias('nc')]                                     [Switch]   $NoCPU,
         [Parameter()] [Alias('nm')]                                     [Switch]   $NoMemory,
         [Parameter()] [Alias('nx')]                                     [Switch]   $NoExit,

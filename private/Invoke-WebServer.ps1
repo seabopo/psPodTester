@@ -16,8 +16,9 @@ function Invoke-WebServer
                 Start-Process -FilePath "pwsh" `
                               -ArgumentList ('-File', $WS_START_PATH, `
                                              '-Port', $testData.WebServerPort, `
-                                             "-EnableConsoleLogs:$($testData.EnableWebServerConsoleLogs)")
+                                             "-EnableConsoleLogs:$($testData.EnableConsoleLogs)")
                 Write-Info -m $($testData.messages.startedws -f $testData.WebServerPort)
+                Start-Sleep -Seconds 5
             }
             catch {
                 Write-Info -e -m $( "... WebServer failed to start: {0}" -f $_.Exception.Message )
@@ -34,8 +35,9 @@ function Invoke-WebServer
                 Start-Process -FilePath "pwsh" -Verb RunAs `
                               -ArgumentList ('-File', $WS_START_PATH, `
                                              '-Port', $testData.WebServerPort, `
-                                             "-EnableConsoleLogs:$($testData.EnableWebServerConsoleLogs)")
+                                             "-EnableConsoleLogs:$($testData.EnableConsoleLogs)")
                 Write-Info -m $($testData.messages.startedws -f $testData.WebServerPort)
+                Start-Sleep -Seconds 5
             }
             catch {
                 Write-Info -e -m $( "... WebServer failed to start: {0}" -f $_.Exception.Message )

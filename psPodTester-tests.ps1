@@ -139,7 +139,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_CpuThreads=2" `
                 -e "PSPOD_TEST_MemThreads=2" `
                 -e "PSPOD_TEST_NoMemory=1" `
-                -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
+                -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -e "PSPOD_INFO_PodName=TestPod" `
                 -e "PSPOD_INFO_ServerName=TestServer" `
                 -it --user ContainerAdministrator `
@@ -239,7 +239,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_WebServerPort=8080" `
-                -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
+                -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -p 8080:8080 `
                 seabopo/pspodtester:nanoserver-1809
 
