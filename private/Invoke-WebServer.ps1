@@ -18,7 +18,7 @@ function Invoke-WebServer
                                              '-Port', $testData.WebServerPort, `
                                              "-EnableConsoleLogs:$($testData.EnableConsoleLogs)")
                 Write-Info -m $($testData.messages.startedws -f $testData.WebServerPort)
-                Start-Sleep -Seconds 5
+                Start-Sleep -Seconds 3
             }
             catch {
                 Write-Info -e -m $( "... WebServer failed to start: {0}" -f $_.Exception.Message )
@@ -37,7 +37,7 @@ function Invoke-WebServer
                                              '-Port', $testData.WebServerPort, `
                                              "-EnableConsoleLogs:$($testData.EnableConsoleLogs)")
                 Write-Info -m $($testData.messages.startedws -f $testData.WebServerPort)
-                Start-Sleep -Seconds 5
+                Start-Sleep -Seconds 3
             }
             catch {
                 Write-Info -e -m $( "... WebServer failed to start: {0}" -f $_.Exception.Message )

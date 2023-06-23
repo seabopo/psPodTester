@@ -67,12 +67,13 @@ if ( $Test.DockerCode )
     #$env:PSPOD_TEST_NoStress            = 1
     $env:PSPOD_TEST_WebServerPort       = 8080
     $env:PSPOD_TEST_EnableWebServer     = 1
+    $env:PSPOD_TEST_EnableConsoleLogs   = 1
     $env:PSPOD_TEST_ShowDebugData       = 1
     $env:PSPOD_TEST_ShowPodInfo         = 1
     $env:PSPOD_INFO_PodName             = 'Podname'
     $env:PSPOD_INFO_ServerName          = 'ServerName'
     $env:PSPOD_TEST_SendMessages        = 1
-    $env:PSPOD_TEST_MessagePrefix       ='UniqueMessagePrefix'
+    $env:PSPOD_TEST_MessagePrefix       = 'UniqueMessagePrefix'
 
     #Remove-Item -Path Env:\PSPOD_TEST_*
 
@@ -133,19 +134,20 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_SendMessages=1" `
                 -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
+                -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
+                -e "PSPOD_TEST_ShowDebugData=1" `
                 -e "PSPOD_TEST_ShowPodInfo=1" `
                 -e "PSPOD_TEST_CpuThreads=2" `
                 -e "PSPOD_TEST_MemThreads=2" `
                 -e "PSPOD_TEST_NoMemory=1" `
-                -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -e "PSPOD_INFO_PodName=TestPod" `
                 -e "PSPOD_INFO_ServerName=TestServer" `
                 -it --user ContainerAdministrator `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # AUTOMATED STRESSING
   # Runs a stress session with the default values and exits. The default settings do

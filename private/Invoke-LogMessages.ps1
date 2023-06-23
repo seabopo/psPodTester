@@ -12,7 +12,7 @@ function Invoke-LogMessages
         Write-Info -p -ps -m $testData.messages.startmsgs
 
         $p = $testData.MessagePrefix
-        $f = $WS_START_PATH
+        $f = $WS_MSG_LOG_PATH
         $c = $testData.EnableConsoleLogs ? '$true' : '$false'
 
         $cmd = {

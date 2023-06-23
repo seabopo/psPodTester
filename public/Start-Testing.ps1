@@ -186,7 +186,7 @@ function Start-Testing
 
             if ( $testData.EnableWebServer ) { Invoke-WebServer -TestData $testData }
 
-            if ( $testData.SendMessages ) { Invoke-LogMessages -MessagePrefix $testData.MessagePrefix }
+            if ( $testData.SendMessages ) { Invoke-LogMessages -TestData $testData }
 
             if ( $NoStress ) {
                 Write-Info -p -ps -m $testData.messages.nostress
