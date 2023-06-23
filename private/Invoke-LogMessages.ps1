@@ -18,7 +18,7 @@ function Invoke-LogMessages
         $cmd = {
             param( [string] $MessagePrefix, [string] $FilePath, [boolean] $EnableConsoleLogs)
             foreach ( $number in 1..2147483647) {
-                $msg = '[{0}] {1}: {2} {3}.' -f $(Get-Date -Format s),$MessagePrefix,'Message #',$number
+                $msg = '{0} {1}: {2} {3}.' -f $(Get-Date -Format s),$MessagePrefix,'Message #',$number
                 $msg | Out-File $filePath -Append
                 if ( $EnableConsoleLogs ) { Write-Host $msg }
                 Start-Sleep -Seconds 15
