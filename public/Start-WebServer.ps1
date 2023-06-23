@@ -16,7 +16,7 @@ function Start-WebServer
             starting   = "Starting web server ..."
             started    = "Web server started on port {0}."
             stopped    = "The web server was stopped."
-            killed     = "The pod was willed."
+            killed     = "The pod was killed."
             stressing  = "A stress test was started."
         }
     }
