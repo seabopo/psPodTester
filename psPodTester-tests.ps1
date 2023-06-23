@@ -105,8 +105,9 @@ if ( $Test.DockerContainer )
                 -it --user ContainerAdministrator `
                 --memory=384m --cpus=2 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass
+                cmd /c pwsh -ExecutionPolicy Bypass
 
+  # Open an interactive container and run a test file.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
                 -it --user ContainerAdministrator `
                 --memory=512m --cpus=2 `
@@ -156,7 +157,7 @@ if ( $Test.DockerContainer )
                 -it `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # AUTOMATED STRESSING - CPU Only
   # Runs a stress session with the default values, but skips memory stressing, and exits.
@@ -165,7 +166,7 @@ if ( $Test.DockerContainer )
                 -it `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # AUTOMATED STRESSING - Memory Only
   # Runs a stress session with the default values, but skips memory stressing, and exits.
@@ -174,7 +175,7 @@ if ( $Test.DockerContainer )
                 -it `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
    # MANUAL STRESSING
    # Runs a test with manually specified values. The stress values listed below are the defaults.
@@ -195,7 +196,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_WebServerPort=8080" `
                 -it --user ContainerAdministrator `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # RANDOMIZED STRESSING
   # Runs a 4-hour test with randomized stress and rest cycles. The stress and rest
@@ -217,7 +218,7 @@ if ( $Test.DockerContainer )
                 -it --user ContainerAdministrator `
                 -p 80:80 `
                 mcr.microsoft.com/powershell:nanoserver-1809-v1.0.5 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # Test dockerhub images.
     docker run `
