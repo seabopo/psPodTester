@@ -105,6 +105,12 @@ if ( $Test.DockerContainer )
                 mcr.microsoft.com/powershell:nanoserver-1809 `
                 pwsh -ExecutionPolicy Bypass
 
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+                -it --user ContainerAdministrator `
+                mcr.microsoft.com/powershell:nanoserver-1809 `
+                cmd /c pwsh -ExecutionPolicy Bypass
+
+
   # DEBUG
   # Dumps the container's environment and application variables and waits for the container to be killed.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
@@ -236,5 +242,27 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_EnableWebServerConsoleLogs=1" `
                 -p 8080:8080 `
                 seabopo/pspodtester:nanoserver-1809
+
+
+
+                docker run `
+                -e "PSPOD_TEST_ShowDebugData=1" `
+                -e "PSPOD_TEST_StressDuration=10" `
+                -e "PSPOD_TEST_WarmUpInterval=1" `
+                -e "PSPOD_TEST_CoolDownInterval=1" `
+                -e "PSPOD_TEST_StressInterval=1" `
+                -e "PSPOD_TEST_RestInterval=1" `
+                -e "PSPOD_TEST_RandomizeIntervals=s,r" `
+                -e "PSPOD_TEST_MaxIntervalDuration=5" `
+                -e "PSPOD_TEST_CpuThreads=1" `
+                -e "PSPOD_TEST_MemThreads=1" `
+                -e "PSPOD_TEST_NoExit=1" `
+                -e "PSPOD_TEST_EnableWebServer=1" `
+                -e "PSPOD_TEST_WebServerPort=8080" `
+                -e "PSPOD_TEST_SendMessages=1" `
+                -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
+                -p 8080:8080 `
+                seabopo/pspodtester:nanoserver-1809
+
 
 }
