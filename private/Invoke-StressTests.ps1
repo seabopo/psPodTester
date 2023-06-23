@@ -42,7 +42,7 @@ function Invoke-StressTests
                 if ( $testData.MEMthreads -gt 0 ) {
                     foreach ( $thread in 1..$testData.MEMthreads ){
                         Start-Job -ScriptBlock {
-                            1..50 | ForEach-Object { $x = 1 }{ [array]$x += $x }
+                            1..10 | ForEach-Object { $x = 1 }{ [array]$x += $x }; Wait-Event -1
                         } | Out-Null
                     }
                 }

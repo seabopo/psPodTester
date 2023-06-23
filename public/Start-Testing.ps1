@@ -40,17 +40,13 @@ function Start-Testing
     .PARAMETER CpuThreads
         OPTIONAL. Integer. Alias: -ct. The number of threads to use for CPU stressing.
         Default Value: 0 (Automatically calculated). Physical and virtualized Windows devices will use 1 thread
-        per logical core. Mac OS, Linux and Window containers will use 2 threads. Passing a zero will enable
-        automatic calculation. Use the NoCPU switch to ignore this test instead of setting CpuThreads to 0.
-        Memory threads also stress the CPU, so when 0 (Automatically calculated) CPU threads the final CPU
-        thread count will be CPU threads - Memory threads. Memory threads are not subtracted from CPU threads
-        when CPU threads are manually set.
+        per logical core. Mac OS, Linux and Window containers will use 2 threads. Use the NoCPU switch to ignore
+        this test instead of setting CpuThreads to 0.
 
     .PARAMETER MemThreads
         OPTIONAL. Integer. Alias: -mt. The number of threads to use for memory stressing.
-        Default Value: 0 (Automatically calculated). Physical and virtualized Windows devices will use 2 threads
-        if memory is greater than 16GB. All other devices will use 1 thread. Passing a zero will enable
-        automatic calculation. Use the NoMemory switch to ignore this test instead of setting MemThreads to 0.
+        Default Value: 0 (Automatically calculated) which will use 2 threads.
+        Use the NoMemory switch to ignore this test instead of setting MemThreads to 0.
 
     .PARAMETER RandomizeIntervals
         OPTIONAL. Array of String. Alias: -rz. An array of single characters indicating the intervals that should

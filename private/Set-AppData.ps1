@@ -114,8 +114,7 @@ function Update-MemoryThreadCount
     param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
 
     $testData.MemThreads = if ( $testData.NoMemory ) { 0 }
-                           elseif ( $testData.MemThreads -eq 0 -and $testData.PhysicalMemory -ge 16384 ) { 2 }
-                           elseif ( $testData.MemThreads -eq 0 -and $testData.PhysicalMemory -lt 16384 ) { 1 }
+                           elseif ( $testData.MemThreads -eq 0 ) { 2 }
                            else { $testData.MemThreads}
 
     if ( $testData.MemThreads -lt 0 ) { 0 }
@@ -129,10 +128,8 @@ function Update-CpuThreadCount
     param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
 
     $testData.CpuThreads = if ( $testData.NoCPU ) { 0 }
-                           elseif ( $testData.CpuThreads -eq 0 ) {
-                               if ( $testData.LogicalCores ) { $testData.LogicalCores - $testData.MemThreads }
-                               else { 2 - $testData.MemThreads }
-                           }
+                           elseif ( $testData.CpuThreads -eq 0 -and $null -eq $testData.LogicalCores ) { 2 }
+                           elseif ( $testData.CpuThreads -eq 0 -and $testData.LogicalCores ) { $testData.LogicalCores }
                            else { $testData.CpuThreads }
 
     if ( $testData.CpuThreads -lt 0 ) { 0 }

@@ -103,14 +103,15 @@ if ( $Test.DockerContainer )
   # Open an interactive container that uses the PowerShell Nano Server base image.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
                 -it --user ContainerAdministrator `
+                --memory=384m --cpus=2 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
                 pwsh -ExecutionPolicy Bypass
 
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
                 -it --user ContainerAdministrator `
+                --memory=512m --cpus=2 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                cmd /c pwsh -ExecutionPolicy Bypass
-
+                cmd /c pwsh -ExecutionPolicy Bypass -file "/psPodTester/test.ps1"
 
   # DEBUG
   # Dumps the container's environment and application variables and waits for the container to be killed.
@@ -122,7 +123,7 @@ if ( $Test.DockerContainer )
                 -it `
                 -p 8080:8080 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
-                pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+                cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # WEBSERVER ONLY - SINGLE POD TESTS
   # Run the web server and skip all tests. A few basic tests can be run from the web
@@ -136,16 +137,15 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
                 -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -e "PSPOD_TEST_NoExit=1" `
-                -e "PSPOD_TEST_NoStress=1" `
                 -e "PSPOD_TEST_ShowDebugData=1" `
                 -e "PSPOD_TEST_ShowPodInfo=1" `
                 -e "PSPOD_TEST_CpuThreads=2" `
                 -e "PSPOD_TEST_MemThreads=2" `
-                -e "PSPOD_TEST_NoMemory=1" `
                 -e "PSPOD_INFO_PodName=TestPod" `
                 -e "PSPOD_INFO_ServerName=TestServer" `
                 -it --user ContainerAdministrator `
                 -p 8080:8080 `
+                --memory=512m --cpus=2 `
                 mcr.microsoft.com/powershell:nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
@@ -216,7 +216,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_WebServerPort=80" `
                 -it --user ContainerAdministrator `
                 -p 80:80 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:nanoserver-1809-v1.0.5 `
                 pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # Test dockerhub images.
@@ -225,7 +225,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
                 -p 8080:8080 `
-                seabopo/pspodtester:nanoserver-1809
+                seabopo/pspodtester:nanoserver-1809-v1.0.5
 
     docker run `
                 -e "PSPOD_TEST_ShowDebugData=1" `
@@ -243,28 +243,26 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_WebServerPort=8080" `
                 -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -p 8080:8080 `
-                seabopo/pspodtester:nanoserver-1809
+                seabopo/pspodtester:nanoserver-1809-v1.0.5
 
-
-
-                docker run `
+    docker run  -e "PSPOD_TEST_EnableWebServer=1" `
+                -e "PSPOD_TEST_WebServerPort=8080" `
+                -e "PSPOD_TEST_SendMessages=1" `
+                -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
+                -e "PSPOD_TEST_EnableConsoleLogs=1" `
+                -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_ShowDebugData=1" `
                 -e "PSPOD_TEST_StressDuration=10" `
                 -e "PSPOD_TEST_WarmUpInterval=1" `
                 -e "PSPOD_TEST_CoolDownInterval=1" `
                 -e "PSPOD_TEST_StressInterval=1" `
                 -e "PSPOD_TEST_RestInterval=1" `
-                -e "PSPOD_TEST_RandomizeIntervals=s,r" `
                 -e "PSPOD_TEST_MaxIntervalDuration=5" `
+                -e "PSPOD_TEST_RandomizeIntervals=s,r" `
                 -e "PSPOD_TEST_CpuThreads=1" `
                 -e "PSPOD_TEST_MemThreads=1" `
-                -e "PSPOD_TEST_NoExit=1" `
-                -e "PSPOD_TEST_EnableWebServer=1" `
-                -e "PSPOD_TEST_WebServerPort=8080" `
-                -e "PSPOD_TEST_SendMessages=1" `
-                -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
+                -e "PSPOD_TEST_NoMemory=1" `
                 -p 8080:8080 `
-                seabopo/pspodtester:nanoserver-1809
-
+                seabopo/pspodtester:nanoserver-1809-v1.0.5
 
 }
