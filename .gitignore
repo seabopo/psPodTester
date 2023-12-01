@@ -1,3 +1,1 @@
-http/app.log
-http/msg.log
-http/usr.log
+http/*.log
