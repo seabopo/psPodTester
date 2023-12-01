@@ -49,9 +49,11 @@ function Start-WebServer
 
                 if ( $EnableConsoleLogs ) { Write-Info -m $log -nl }
 
+                $showheaders = $false
                 $stressAndRedirect = $false
                 $stop = $false
                 $kill = $false
+                $appName    = $env:PSPOD_APP_NAME ??= 'psPodTester'
                 $cpuThreads = $env:PSPOD_TEST_CpuThreads ??= 0
                 $memThreads = $env:PSPOD_TEST_MemThreads ??= 0
                 $noCPU      = if ( $env:PSPOD_TEST_NoCPU )    { $true } else { $false }
@@ -96,6 +98,21 @@ function Start-WebServer
                         $stressAndRedirect                  = $true
                         break
                     }
+                    "GET /headers" {
+                        $maxLen = ($request.headers | Measure-Object -Maximum -Property Length).Maximum
+                        $headers = "`r`n`r`n" +
+                                   "--------------------`r`n" +
+                                   "HTTP REQUEST HEADERS`r`n" +
+                                   "--------------------`r`n" +
+                                    $( ($request.headers |
+                                            ForEach-Object {
+                                                '{0} :: {1}' -f (($_).ToUpper() + (' ' * ($maxLen-$_.length))),
+                                                                $request.headers[$_]
+                                            }
+                                       ) -join "`r`n" )
+                        $showheaders = $true
+                        "break"
+                    }
                     "GET /userlog" { $contentPath = $WS_USR_LOG_PATH; break }
                     "GET /applog"  { $contentPath = $WS_APP_LOG_PATH; break }
                     "GET /msglog"  { $contentPath = $WS_MSG_LOG_PATH; break }
@@ -131,11 +148,18 @@ function Start-WebServer
                     Get-Process "pwsh" | Stop-Process
                 }
                 else {
-                    $ResponseText = $((Get-Content -path $WS_HEADER_PATH) -Join "`r`n") +
-                                    $((Get-Content -path $contentPath)    -Join "`r`n") +
-                                    $((Get-Content -path $WS_FOOTER_PATH) -Join "`r`n")
+                    if ( $showheaders ) {
+                        $ResponseText = $((Get-Content -path $WS_HEADER_PATH) -Join "`r`n").Replace('##APPNAME##',$appName) +
+                                        $headers +
+                                        $((Get-Content -path $WS_FOOTER_PATH) -Join "`r`n")
+                    }
+                    else {
+                        $ResponseText = $((Get-Content -path $WS_HEADER_PATH) -Join "`r`n").Replace('##APPNAME##',$appName) +
+                                        $((Get-Content -path $contentPath)    -Join "`r`n") +
+                                        $((Get-Content -path $WS_FOOTER_PATH) -Join "`r`n")
+                        $response.AddHeader("Last-Modified", [IO.File]::GetLastWriteTime($contentPath).ToString('r'))
+                    }
                     $buffer = [Text.Encoding]::UTF8.GetBytes($ResponseText)
-                    $response.AddHeader("Last-Modified", [IO.File]::GetLastWriteTime($contentPath).ToString('r'))
                     $response.AddHeader("Server", "psPodTester")
                     $response.SendChunked = $FALSE
                     $response.ContentType = "text/HTML"

@@ -18,13 +18,14 @@ $null | Out-File $( '{0}/http/msg.log' -f $PSScriptRoot )
 $Test = @{
     DumpDebugData    = $false
     WebServer        = $false
+    WebServerDirect  = $false
     AutomaticThreads = $false
     ManualThreads    = $false
     RandomThreads    = $false
     CPU              = $false
     Memory           = $false
     None             = $false
-    DockerCode       = $false # $true #
+    DockerCode       = $true # $false #
     DockerContainer  = $false
 }
 
@@ -34,7 +35,9 @@ $Test = @{
 
 if ( $Test.DumpDebugData )    { Start-Testing -ns -dd -pi }
 
-if ( $Test.WebServer )        { Start-Testing -ws -ns -nx -wc -pi }
+if ( $Test.WebServer )        { Start-Testing -ws -ns -nx -cl -pi }
+
+if ( $Test.WebServerDirect )  { $env:PSPOD_APP_NAME = 'psWebTester'; Start-Webserver -c }
 
 if ( $Test.AutomaticThreads ) { Start-Testing -sd 3 -wi 1 -ci 0 -si 1 -ri 1 -ws }
 
@@ -133,6 +136,7 @@ if ( $Test.DockerContainer )
   # this pod will cause the K8s HPA to run a new instance, but the second instance will
   # not generate any load.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+                -e "PSPOD_APP_NAME=WebTester" `
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_SendMessages=1" `
                 -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
