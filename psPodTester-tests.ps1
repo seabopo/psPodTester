@@ -18,14 +18,14 @@ $null | Out-File $( '{0}/http/msg.log' -f $PSScriptRoot )
 $Test = @{
     DumpDebugData    = $false
     WebServer        = $false
-    WebServerDirect  = $false
+    WebServerDirect  = $true
     AutomaticThreads = $false
     ManualThreads    = $false
     RandomThreads    = $false
     CPU              = $false
     Memory           = $false
     None             = $false
-    DockerCode       = $true # $false #
+    DockerCode       = $false # $true #
     DockerContainer  = $false
 }
 

@@ -100,11 +100,15 @@ function Start-WebServer
                     }
                     "GET /headers" {
                         $maxLen = ($request.headers | Measure-Object -Maximum -Property Length).Maximum
-                        $headers = "`r`n`r`n" +
+
+
+
+
+                        $headers = "`r`n" +
                                    "--------------------`r`n" +
                                    "HTTP REQUEST HEADERS`r`n" +
                                    "--------------------`r`n" +
-                                    $( ($request.headers |
+                                    $( ($request.headers | Sort-Object |
                                             ForEach-Object {
                                                 '{0} :: {1}' -f (($_).ToUpper() + (' ' * ($maxLen-$_.length))),
                                                                 $request.headers[$_]
