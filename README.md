@@ -18,4 +18,4 @@ A variety of Windows and Docker usage examples are available in the
 [/psPodTester-tests.ps1](https://github.com/seabopo/psPodTester/blob/master/psPodTester-tests.ps1) file.
 
 A Windows Nano Server image of this module is available here: 
-[seabopo/pspodtester](https://hub.docker.com/repository/docker/seabopo/pspodtester/general)
+[seabopo/pspodtester](https://hub.docker.com/repository/docker/seabopo/pspodtester/general)](https://hub.docker.com/r/seabopo/pspodtester)
