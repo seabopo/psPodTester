@@ -1,15 +1,16 @@
 # psPodTester
-A PowerShell module to test Windows AKS pods. 
+A PowerShell module to test Windows container deployments. 
 
 Features:
  - Configurable CPU and memory stressing.
- - A web server for:
-     - Ingress testing.
-     - Viewing the test logs.
-     - Viewing user requests.
-     - Running a few pre-canned tests, including breaking the pod.
  - Environment variables debug/dump.
-
+ - A web server for:
+     - Running a few pre-canned stress tests.
+     - Ingress testing.
+     - Viewing the test progress / logs.
+     - Viewing user requests.
+     - Viewing the HTTP headers of a user request.
+ 
 The full parameter list can be viewed in the 
 [/public/Start-Testing.ps1](https://github.com/seabopo/psPodTester/blob/master/public/Start-Testing.ps1) 
 file, which is the module's main entrypoint.
