@@ -104,6 +104,9 @@ if ( $Test.DockerContainer )
   exit
 
   # Open an interactive container that uses the PowerShell Nano Server base image.
+    docker run -it --user ContainerAdministrator mcr.microsoft.com/powershell:nanoserver-1809 cmd /c pwsh -ExecutionPolicy Bypass
+
+  # Open an interactive container that uses the PowerShell Nano Server base image.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
                 -it --user ContainerAdministrator `
                 --memory=384m --cpus=2 `
