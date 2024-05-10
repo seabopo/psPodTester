@@ -241,10 +241,7 @@ if ( $Test.DockerContainer )
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # Test dockerhub images.
-    docker run `
-                -e "PSPOD_PRESET_Webserver=1" `
-                -p 80:80 `
-                seabopo/pspodtester:nanoserver-1809
+    docker run -e "PSPOD_PRESET_Webserver=1" -p 80:80 seabopo/pspodtester:latest
 
     docker run `
                 -e "PSPOD_TEST_EnableWebServer=1" `
