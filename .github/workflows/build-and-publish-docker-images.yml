@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
   schedule:
   - cron: '0 0 15 * *'
-  # workflow_run:
-  #   workflows: ["Package Module Artifact"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["Package and Upload Release Asset"]
+    types:
+      - completed
 
 jobs:
 
@@ -37,10 +37,10 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: seabopo/pspodtester
-          tags: ${{ github.run_id }}-${{ github.run_number }}-nanoserver-ltsc2022-v${{ env.RELEASE }},nanoserver-ltsc2022-v${{ env.RELEASE }}, nanoserver-ltsc2022
+          tags: ${{ github.run_id }}-${{ github.run_number }}-nanoserver-ltsc2022-${{ env.RELEASE }},nanoserver-ltsc2022-${{ env.RELEASE }}, nanoserver-ltsc2022
           registry: docker.io
           dockerfile: ./docker/dockerfile
-          buildArgs: BASE_IMAGE=mcr.microsoft.com/powershell:nanoserver-ltsc2022, APP_VERSION=${{ env.RELEASE }}
+          buildArgs: BASE_IMAGE=mcr.microsoft.com/powershell:lts-nanoserver-ltsc2022, APP_VERSION=${{ env.RELEASE }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         env:
@@ -57,10 +57,10 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: seabopo/pspodtester
-          tags: ${{ github.run_id }}-${{ github.run_number }}-nanoserver-1809-v${{ env.RELEASE }}, nanoserver-1809-v${{ env.RELEASE }}, nanoserver-1809
+          tags: ${{ github.run_id }}-${{ github.run_number }}-nanoserver-1809-${{ env.RELEASE }}, nanoserver-1809-${{ env.RELEASE }}, nanoserver-1809
           registry: docker.io
           dockerfile: ./docker/dockerfile
-          buildArgs: BASE_IMAGE=mcr.microsoft.com/powershell:nanoserver-1809, APP_VERSION=${{ env.RELEASE }}
+          buildArgs: BASE_IMAGE=mcr.microsoft.com/powershell:lts-nanoserver-1809, APP_VERSION=${{ env.RELEASE }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         env:
@@ -76,7 +76,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: BUILD latest
-        run: docker manifest create seabopo/pspodtester:latest --amend seabopo/pspodtester:nanoserver-1809-v${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-ltsc2022-v${{ env.RELEASE }}
+        run: docker manifest create seabopo/pspodtester:latest --amend seabopo/pspodtester:nanoserver-1809-${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
       - name: PUSH latest
@@ -84,7 +84,7 @@ jobs:
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
       - name: BUILD nanoserver
-        run: docker manifest create seabopo/pspodtester:nanoserver --amend seabopo/pspodtester:nanoserver-1809-v${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-ltsc2022-v${{ env.RELEASE }}
+        run: docker manifest create seabopo/pspodtester:nanoserver --amend seabopo/pspodtester:nanoserver-1809-${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
       - name: PUSH nanoserver
@@ -92,11 +92,11 @@ jobs:
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
       - name: BUILD nanoserver-version
-        run: docker manifest create seabopo/pspodtester:nanoserver-v${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-1809-v${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-ltsc2022-v${{ env.RELEASE }}
+        run: docker manifest create seabopo/pspodtester:nanoserver-${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-1809-${{ env.RELEASE }} --amend seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
       - name: PUSH nanoserver-version
-        run: docker manifest push --purge seabopo/pspodtester:nanoserver-v${{ env.RELEASE }}
+        run: docker manifest push --purge seabopo/pspodtester:nanoserver-${{ env.RELEASE }}
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
 

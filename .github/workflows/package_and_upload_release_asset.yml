@@ -4,12 +4,12 @@ name: Package and Upload Release Asset
 on:
   workflow_dispatch:
   release:
-    types: [created,published,released]
+    types: [published]
 
 jobs:
 
   packageModule:
-    name: Package Module Asset
+    name: Package and Upload PowerShell Module Asset
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
