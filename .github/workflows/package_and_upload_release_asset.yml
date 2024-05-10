@@ -15,11 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Zip artifact for deployment
-        run: zip psPodTester-$RELEASE_TAG.zip ./psPodTester/* -r
+        run: zip psPodTester_$RELEASE_TAG.zip ./psPodTester/* -r
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: psPodTester-${{ github.event.release.tag_name }}.zip
+          asset_path: psPodTester_${{ github.event.release.tag_name }}.zip
           github_token: ${{ secrets.GITHUB_TOKEN }}
