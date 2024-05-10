@@ -242,6 +242,11 @@ if ( $Test.DockerContainer )
 
   # Test dockerhub images.
     docker run `
+                -e "PSPOD_PRESET_Webserver=1" `
+                -p 8080:8080 `
+                seabopo/pspodtester:latest
+
+    docker run `
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `

@@ -65,6 +65,20 @@ $arrayParams  = @('PSPOD_TEST_RandomizeIntervals')
 
 $params = @{}
 
+if ( $env:PSPOD_PRESET_Webserver ) {
+    write-host "`nThe Webserver preset was found. Enabling settings ..." -ForegroundColor Magenta
+    $env:PSPOD_TEST_EnableWebServer     = 1
+    $env:PSPOD_TEST_EnableConsoleLogs   = 1
+    $env:PSPOD_TEST_SendMessages        = 1
+    $env:PSPOD_TEST_NoStress            = 1
+    $env:PSPOD_TEST_NoExit              = 1
+    $env:PSPOD_TEST_ShowDebugData       = 1
+    $env:PSPOD_TEST_ShowPodInfo         = 1
+    if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_MessagePrefix) ) {
+        $env:PSPOD_TEST_MessagePrefix   = 'psPodTesterMessagePrefix'
+    }
+}
+
 if ( $env:PSPOD_TEST_ShowDebugData ) {
     write-host "`nThe following environment variables were found:" -ForegroundColor Magenta
     Get-Item -Path Env:* | Sort-Object | Out-String
