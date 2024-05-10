@@ -8,17 +8,6 @@ on:
 
 jobs:
 
-  debug:
-    name: Debug
-    runs-on: ubuntu-latest
-    steps:
-    - name: Dump env
-      run: env | sort
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-
   packageModule:
     #permissions: write-all
     name: Package Module Asset
@@ -27,7 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Zip artifact for deployment
-        run: zip psPodTester-${{ github.event.release.tag_name }}.zip ./psPodTester/* -r
+        run: zip psPodTester-$RELEASE_TAG.zip ./psPodTester/* -r
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
