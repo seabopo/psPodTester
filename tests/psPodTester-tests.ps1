@@ -243,8 +243,8 @@ if ( $Test.DockerContainer )
   # Test dockerhub images.
     docker run `
                 -e "PSPOD_PRESET_Webserver=1" `
-                -p 8080:8080 `
-                seabopo/pspodtester:latest
+                -p 80:80 `
+                seabopo/pspodtester:nanoserver-1809
 
     docker run `
                 -e "PSPOD_TEST_EnableWebServer=1" `

@@ -68,14 +68,25 @@ $params = @{}
 if ( $env:PSPOD_PRESET_Webserver ) {
     write-host "`nThe Webserver preset was found. Enabling settings ..." -ForegroundColor Magenta
     $env:PSPOD_TEST_EnableWebServer     = 1
-    $env:PSPOD_TEST_EnableConsoleLogs   = 1
-    $env:PSPOD_TEST_SendMessages        = 1
     $env:PSPOD_TEST_NoStress            = 1
     $env:PSPOD_TEST_NoExit              = 1
-    $env:PSPOD_TEST_ShowDebugData       = 1
-    $env:PSPOD_TEST_ShowPodInfo         = 1
+    if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_WebServerPort) ) {
+        $env:PSPOD_TEST_WebServerPort = 80
+    }
+    if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_SendMessages) ) {
+        $env:PSPOD_TEST_SendMessages = 1
+    }
     if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_MessagePrefix) ) {
-        $env:PSPOD_TEST_MessagePrefix   = 'psPodTesterMessagePrefix'
+        $env:PSPOD_TEST_MessagePrefix = 'psPodTesterMessagePrefix'
+    }
+    if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_ShowDebugData) ) {
+        $env:PSPOD_TEST_ShowDebugData = 1
+    }
+    if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_EnableConsoleLogs) ) {
+        $env:PSPOD_TEST_EnableConsoleLogs = 1
+    }
+    if ( [string]::IsNullOrEmpty($env:PSPOD_TEST_ShowPodInfo) ) {
+        $env:PSPOD_TEST_ShowPodInfo = 1
     }
 }
 
