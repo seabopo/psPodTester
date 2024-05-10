@@ -4,8 +4,7 @@ name: Package Module Artifact
 on:
   workflow_dispatch:
   release:
-    types: #[published,released]
-      - created
+    types: [created,published,released]
 
 jobs:
 
@@ -16,8 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Zip artifact for deployment
-        run: zip psPodTester.zip ./psPodTester/* -r
+        run: zip psPodTester-${{ github.event.release.tag_name }}.zip ./psPodTester/* -r
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: psPodTester.zip
+          asset_path: psPodTester-${{ github.event.release.tag_name }}.zip
+          github_token: ${{ secrets.GITHUB_TOKEN }}
