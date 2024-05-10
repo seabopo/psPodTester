@@ -9,6 +9,7 @@ on:
 jobs:
 
   packageModule:
+    permissions: write-all
     name: Package Module Asset
     runs-on: ubuntu-latest
     steps:
