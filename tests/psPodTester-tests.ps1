@@ -6,38 +6,44 @@
 
 Clear-Host
 
-Set-Location  -Path $PSScriptRoot
-Push-Location -Path $PSScriptRoot
+$scriptRootPath = $(Split-Path $MyInvocation.MyCommand.Path)
+$repoRootPath   = $((Get-Item $scriptRootPath).Parent.FullName)
+$repoName       = $($repoRootPath | Split-Path -Leaf)
+$modulePath     = Join-Path -Path $repoRootPath -ChildPath $repoName
 
-Import-Module $(Split-Path $Script:MyInvocation.MyCommand.Path) -Force
+Set-Location  -Path $scriptRootPath
+Push-Location -Path $scriptRootPath
 
-$null | Out-File $( '{0}/http/app.log' -f $PSScriptRoot )
-$null | Out-File $( '{0}/http/usr.log' -f $PSScriptRoot )
-$null | Out-File $( '{0}/http/msg.log' -f $PSScriptRoot )
+Import-Module $modulePath -Force
+
+$null | Out-File $( '{0}/http/app.log' -f $modulePath )
+$null | Out-File $( '{0}/http/usr.log' -f $modulePath )
+$null | Out-File $( '{0}/http/msg.log' -f $modulePath )
 
 $Test = @{
-    DumpDebugData    = $false
-    WebServer        = $false
-    WebServerDirect  = $true
-    AutomaticThreads = $false
-    ManualThreads    = $false
-    RandomThreads    = $false
-    CPU              = $false
-    Memory           = $false
-    None             = $false
-    DockerCode       = $false # $true #
-    DockerContainer  = $false
+    WebServer        = $true
+    # WebServerDirect  = $true
+    # DumpDebugData    = $true
+    # AutomaticThreads = $true
+    # ManualThreads    = $true
+    # RandomThreads    = $true
+    # CPU              = $true
+    # Memory           = $true
+    # None             = $true
+    # DockerCode       = $true
+    # DockerContainer  = $true
 }
 
 # Clean-up Jobs if you manually abort
 #   get-job | stop-job
 #   get-job | Remove-Job
 
-if ( $Test.DumpDebugData )    { Start-Testing -ns -dd -pi }
+# Requies this this session to be running as admin ...
+if ( $Test.WebServerDirect )  { $env:PSPOD_APP_NAME = 'psPodTester'; Start-Webserver -c }
 
 if ( $Test.WebServer )        { Start-Testing -ws -ns -nx -cl -pi }
 
-if ( $Test.WebServerDirect )  { $env:PSPOD_APP_NAME = 'psWebTester'; Start-Webserver -c }
+if ( $Test.DumpDebugData )    { Start-Testing -ns -dd -pi }
 
 if ( $Test.AutomaticThreads ) { Start-Testing -sd 3 -wi 1 -ci 0 -si 1 -ri 1 -ws }
 
@@ -84,52 +90,58 @@ if ( $Test.DockerCode )
 
 }
 
+# NOTES:
+#  - Windows Versions:
+#    - The Windows 10 and Windows Server 2019 OS require the 'lts-nanoserver-1809' image.
+#    - The Windows 11 and Windows Server 2022 OS require the 'lts-nanoserver-ltsc2022' image.
+#  - If the NoExit switch is not used the containers will exit when the stress intervals
+#    have completed. If the container is run as a K8s service the scheduler will restart the
+#    pod, and the tests. Use the NoExit parameter to avoid this. Alternatively, use this to
+#    test pod restarts and alerting. You can also use the cooldown period to delay the pod
+#    from exiting.
+#  - Running the webserver requires that the user context is ContainerAdministrator. You'll
+#    get an authorization error otherwise and the webserver will not start.
+#  - Running the tests from the web server UI instead of specifying testes in the docker file
+#    will stress only the individual pod - there is no communication to other pods, so any
+#    additional pods that are spun up based on pod autoscaling will produce no load.
+#  - To stress pod autoscaling run tests at pod launch. This will max out your
+#    autoscaling counts. Make sure to allow rest intervals that will allow all pods to
+#    scale down via the autoscaler before the stress cycle starts again.
+#
+# UPDATE "SOURCE=C:\Repos\Github\psPodTester\psPodTester" to your own repo path for testing.
+#
 if ( $Test.DockerContainer )
 {
-  # NOTES:
-  #  - If the NoExit switch is not used the containers will exit when the stress intervals
-  #    have completed. If the container is run as a K8s servive the scheduler will restart the
-  #    pod, and the tests. Use the NoExit parameter to avoid this. Alternatively, use this to
-  #    test pod restarts and alerting. You can also use the cooldown period to delay the pod
-  #    from exiting.
-  #  - Running the webserver requires that the user context is ContainerAdministrator. You'll
-  #    get an authorization error otherwise and the webserver will not start.
-  #  - Running the tests from the web server will stress only the individual pod - there is
-  #    no communication to other pods, so any additional pods that are spun up based on pod
-  #    autoscaling will produce no load.
-  #  - To stress pod autoscaling run tests at pod launch. This will max out your
-  #    autoscaling counts. Make sure to allow rest intervals that will allow all pods to
-  #    scale down via the autoscaler before the stress cycle starts again.
 
   exit
 
   # Open an interactive container that uses the PowerShell Nano Server base image.
-    docker run -it --user ContainerAdministrator mcr.microsoft.com/powershell:nanoserver-1809 cmd /c pwsh -ExecutionPolicy Bypass
+    docker run -it --user ContainerAdministrator mcr.microsoft.com/powershell:lts-nanoserver-1809 cmd /c pwsh -ExecutionPolicy Bypass
 
   # Open an interactive container that uses the PowerShell Nano Server base image.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -it --user ContainerAdministrator `
                 --memory=384m --cpus=2 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass
 
   # Open an interactive container and run a test file.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -it --user ContainerAdministrator `
                 --memory=512m --cpus=2 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -file "/psPodTester/test.ps1"
 
   # DEBUG
   # Dumps the container's environment and application variables and waits for the container to be killed.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
                 -e "PSPOD_TEST_ShowDebugData=1" `
                 -e "PSPOD_TEST_ShowPodInfo=1" `
                 -it `
                 -p 8080:8080 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # WEBSERVER ONLY - SINGLE POD TESTS
@@ -138,13 +150,14 @@ if ( $Test.DockerContainer )
   # allow you to test a singe container/pod for logging, monitoring, alterting. Stressing
   # this pod will cause the K8s HPA to run a new instance, but the second instance will
   # not generate any load.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
-                -e "PSPOD_APP_NAME=WebTester" `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
+                -e "PSPOD_APP_NAME=psPodTester" `
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_SendMessages=1" `
                 -e "PSPOD_TEST_MessagePrefix=UniqueMessagePrefix" `
                 -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -e "PSPOD_TEST_NoExit=1" `
+                -e "PSPOD_TEST_NoStress=1" `
                 -e "PSPOD_TEST_ShowDebugData=1" `
                 -e "PSPOD_TEST_ShowPodInfo=1" `
                 -e "PSPOD_TEST_CpuThreads=2" `
@@ -154,34 +167,34 @@ if ( $Test.DockerContainer )
                 -it --user ContainerAdministrator `
                 -p 8080:8080 `
                 --memory=512m --cpus=2 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # AUTOMATED STRESSING
   # Runs a stress session with the default values and exits. The default settings do
   # not enable the webserver, which requires the --user ContainerAdministrator switch.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -it `
                 -p 8080:8080 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # AUTOMATED STRESSING - CPU Only
   # Runs a stress session with the default values, but skips memory stressing, and exits.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_TEST_NoMemory=1" `
                 -it `
                 -p 8080:8080 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # AUTOMATED STRESSING - Memory Only
   # Runs a stress session with the default values, but skips memory stressing, and exits.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_TEST_NoCPU=1" `
                 -it `
                 -p 8080:8080 `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
    # MANUAL STRESSING
@@ -189,7 +202,7 @@ if ( $Test.DockerContainer )
    # Setting CPU/Memory threads to zero automatically calculates them based on environment.
    # The web server is enabled, which requires --user ContainerAdministrator.
    # The NoExit switch is enabled so the container will not exit and will run indefinitely.
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_TEST_StressDuration=10" `
                 -e "PSPOD_TEST_WarmUpInterval=1" `
                 -e "PSPOD_TEST_CoolDownInterval=0" `
@@ -202,14 +215,14 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_WebServerPort=8080" `
                 -it --user ContainerAdministrator `
-                mcr.microsoft.com/powershell:nanoserver-1809 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # RANDOMIZED STRESSING
   # Runs a 4-hour test with randomized stress and rest cycles. The stress and rest
   # cycle intervals will range from 5 minutes (StressInterval/RestInterval) to
   # 60 minutes (MaxIntervalDuration).
-    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester,target=C:\psPodTester `
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_TEST_StressDuration=240" `
                 -e "PSPOD_TEST_WarmUpInterval=1" `
                 -e "PSPOD_TEST_CoolDownInterval=0" `
@@ -224,7 +237,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_WebServerPort=80" `
                 -it --user ContainerAdministrator `
                 -p 80:80 `
-                mcr.microsoft.com/powershell:nanoserver-1809-v1.0.5 `
+                mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   # Test dockerhub images.
@@ -233,7 +246,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_NoExit=1" `
                 -e "PSPOD_TEST_NoStress=1" `
                 -p 8080:8080 `
-                seabopo/pspodtester:nanoserver-1809-v1.0.5
+                seabopo/pspodtester:latest
 
     docker run `
                 -e "PSPOD_TEST_ShowDebugData=1" `
@@ -251,7 +264,7 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_WebServerPort=8080" `
                 -e "PSPOD_TEST_EnableConsoleLogs=1" `
                 -p 8080:8080 `
-                seabopo/pspodtester:nanoserver-1809-v1.0.5
+                seabopo/pspodtester:latest
 
     docker run  -e "PSPOD_TEST_EnableWebServer=1" `
                 -e "PSPOD_TEST_WebServerPort=8080" `
@@ -271,6 +284,6 @@ if ( $Test.DockerContainer )
                 -e "PSPOD_TEST_MemThreads=1" `
                 -e "PSPOD_TEST_NoMemory=1" `
                 -p 8080:8080 `
-                seabopo/pspodtester:nanoserver-1809-v1.0.5
+                seabopo/pspodtester:latest
 
 }

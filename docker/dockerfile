@@ -1,0 +1,51 @@
+
+#
+# NOTES:
+#   Base Image:    https://hub.docker.com/_/microsoft-powershell
+#   Application:   https://github.com/seabopo/psStress
+#   Module Source: https://github.com/seabopo/psPodTester/releases/download/v1.0.0/psPodTester_v1.0.0.zip
+#
+#   Use the PowerShell version of NanoServer to make installation easier/dynamic.
+#   Put the app in a subdirectory to avoid security errors during installation.
+#
+#   Variables are fed from the BuildTasks section of the ado-pipeline.yml file.
+#
+
+ARG BASE_IMAGE
+
+FROM ${BASE_IMAGE}
+
+ARG APP_VERSION=1.0.0
+
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+RUN Write-Host "Application Version: $($env:APP_VERSION)"; \
+    Write-Host "URI: https://github.com/seabopo/psPodTester/releases/download/v$($env:APP_VERSION)/psPodTester_v$($env:APP_VERSION).zip"; \
+    New-Item \
+        -ItemType directory \
+        -Path "/psPodTester"; \
+        Invoke-WebRequest \
+        -Uri "https://github.com/seabopo/psPodTester/releases/download/v$($env:APP_VERSION)/psPodTester_v$($env:APP_VERSION).zip" \
+        -OutFile "/psPodTester/psPodTester.zip"; \
+    Expand-Archive \
+        -Path "/psPodTester/psPodTester.zip" \
+        -DestinationPath "/" \
+        -Force; \
+    Remove-Item \
+        -Path "/psPodTester/psPodTester.zip" \
+        -Force;
+
+USER ContainerAdministrator
+
+ENTRYPOINT ["pwsh.exe"]
+
+CMD [ "-File", "C:/psPodTester/docker.ps1" ]
+
+LABEL org.opencontainers.image.title="psPodTester" \
+      org.opencontainers.image.description="A PowerShell module to test Windows container deployments." \
+      org.opencontainers.image.documentation="https://github.com/seabopo/psPodTester" \
+      org.opencontainers.image.base.name="${BASE_IMAGE}" \
+      org.opencontainers.image.version="${APP_VERSION}" \
+      org.opencontainers.image.url="https://hub.docker.com/r/seabopo/pspodtester" \
+      org.opencontainers.image.vendor="seabopo" \
+      org.opencontainers.image.authors="seabopo @ GitHub"
