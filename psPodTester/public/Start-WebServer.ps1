@@ -74,6 +74,19 @@ function Start-WebServer
                         $stressAndRedirect             = $true
                         break
                     }
+                    "GET /stress30" {
+                        Remove-Item -Path Env:\PSPOD_TEST_*
+                        $env:PSPOD_TEST_WarmUpInterval = 0
+                        $env:PSPOD_TEST_StressDuration = 30
+                        $env:PSPOD_TEST_StressInterval = 30
+                        $env:PSPOD_TEST_RestInterval   = 0
+                        $env:PSPOD_TEST_CpuThreads     = $CpuThreads
+                        $env:PSPOD_TEST_MemThreads     = $MemThreads
+                        if ( $noCPU ) { $env:PSPOD_TEST_NoCPU    = 1 }
+                        if ( $noMem ) { $env:PSPOD_TEST_NoMemory = 1 }
+                        $stressAndRedirect             = $true
+                        break
+                    }
                     "GET /stress10x4" {
                         Remove-Item -Path Env:\PSPOD_TEST_*
                         $env:PSPOD_TEST_WarmUpInterval = 0
@@ -100,10 +113,6 @@ function Start-WebServer
                     }
                     "GET /headers" {
                         $maxLen = ($request.headers | Measure-Object -Maximum -Property Length).Maximum
-
-
-
-
                         $headers = "`r`n" +
                                    "--------------------`r`n" +
                                    "HTTP REQUEST HEADERS`r`n" +
@@ -172,6 +181,10 @@ function Start-WebServer
                     $response.Close()
                 }
             }
+        }
+        catch {
+            Write-Info -e -m $( "WebServer failed to start: {0}" -f $_.Exception.Message )
+            Start-Sleep -Seconds 10
         }
         finally
         {

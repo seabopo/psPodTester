@@ -25,54 +25,6 @@ function Add-CallParameters
     return $testData
 }
 
-function Test-UserIsAdmin
-{
-    [CmdletBinding()] [OutputType([PSCustomObject])]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
-
-    $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-    $principal = New-Object System.Security.Principal.WindowsPrincipal($currentUser)
-    $isAdmin = $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
-
-    $testData.Add('UserIsAdmin',$isAdmin)
-
-    return $testData
-}
-
-function Test-IsContainer
-{
-    [CmdletBinding()] [OutputType([PSCustomObject])]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
-
-    $isContainer = $false
-
-    if ( $IsWindows ) {
-        if     ( $(Get-Service -Name cexecsvc -ErrorAction SilentlyContinue) )   { $isContainer = $true }
-        elseif ( $env:POWERSHELL_DISTRIBUTION_CHANNEL -like '*PSDocker*' )       { $isContainer = $true }
-        elseif ( $env:USERNAME -in @('ContainerUser','ContainerAdministrator') ) { $isContainer = $true }
-    }
-
-    $testData.Add('isContainer',$isContainer)
-
-    return $testData
-}
-
-function Test-IsNanoServer
-{
-    [CmdletBinding()] [OutputType([PSCustomObject])]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
-
-    $isNanoServer = $false
-
-    if ( $IsWindows ) {
-        if ( $env:POWERSHELL_DISTRIBUTION_CHANNEL -like '*NanoServer*' ) { $isNanoServer = $true }
-    }
-
-    $testData.Add('isNanoServer',$isNanoServer)
-
-    return $testData
-}
-
 function Add-PhysicalMemory
 {
     [CmdletBinding()] [OutputType([PSCustomObject])]
@@ -99,7 +51,7 @@ function Add-LogicalCores
     $logicalCores = $null
 
     if ( $IsWindows ) {
-        if ( $testData.IsContainer ) { $logicalCores = $Env:NUMBER_OF_PROCESSORS }
+        if ( $ENV_ISCONTAINER ) { $logicalCores = $Env:NUMBER_OF_PROCESSORS }
         else { $logicalCores = (Get-ComputerInfo).CsNumberOfLogicalProcessors }
     }
 
@@ -223,7 +175,7 @@ function Add-UserMessages
 
     $messages = @{
 
-        start      = "Starting ..."
+        start      = "Starting tests..."
         warm       = "Starting warm up interval ..."
         startcycle = "Starting stress/rest interval cycle ..."
         stress     = "Starting stress interval ..."
@@ -231,11 +183,7 @@ function Add-UserMessages
         cool       = "Starting cool down interval ..."
         completed  = "All intervals completed."
         error      = "Intervals failed."
-        noexit     = "The NoExit switch was detected.`r`nThis process will now wait indefinitely."
-        exit       = "The process is now exiting ..."
         nostress   = "The NoStress switch was detected.`r`nAll stress intervals will be skipped."
-        podinfo    = "POD Information"
-        startmsgs  = "The SendMessages switch was detected.`nLogging test messages with prefix '{0}' every 15 seconds ..." -f $testData.MessagePrefix
 
         warmint    = "... Warm Interval: {0} minutes"   -f $testData.WarmUpInterval
         coolint    = "... Cool Interval: {0} minutes"   -f $testData.CoolDownInterval
@@ -246,14 +194,6 @@ function Add-UserMessages
         cputhreads = "... CPU Threads: {0}"             -f $testData.CPUthreads
         memthreads = "... Memory Threads: {0}"          -f $testData.MEMthreads
 
-        container  = "... Running in Container: {0}"   -f $testData.isContainer
-        adminuser  = "... User is Admin: {0}"          -f $testData.UserIsAdmin
-
-        startingws = "Starting web server ..."
-        wselevate  = "... User does not have admin rights. Attempting to elevate ..."
-        startedws  = "... Web server started on port {0}." -f $testData.WebServerPort
-        nostartws  = "... CANNOT START WEB SERVER. User does not have admin rights."
-
         jobs      = "... Jobs started: {0}"
         countdown = "... Interval will complete in {0} minute(s) ..."
         cleanup   = "... Cleaning up jobs ..."
@@ -261,76 +201,6 @@ function Add-UserMessages
     }
 
     $testData.Add('Messages',$messages)
-
-    return $testData
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function Test-HasCIM
-{
-    [CmdletBinding()] [OutputType([PSCustomObject])]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
-
-    $hasCIM = $false
-
-    if ( $IsWindows ) {
-        try {
-            Get-CimInstance -ClassName Win32_ComputerSystem
-            $hasCIM = $true
-        }
-        catch { }
-    }
-
-    $testData.Add('HasCIM',$hasCIM)
-
-    return $testData
-}
-
-function Test-UserCanRunAs
-{
-    [CmdletBinding()] [OutputType([PSCustomObject])]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
-
-    try {
-        $proc = Start-Process -FilePath "pwsh" -Verb RunAs -PassThru -ArgumentList('dir')
-        $testData.Add('UserCanRunAs',$true)
-    }
-    catch {
-        $testData.Add('UserCanRunAs',$false)
-    }
-
-    return $testData
-}
-
-function Test-UserCanRunWebServer
-{
-    [CmdletBinding()] [OutputType([PSCustomObject])]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
-
-    try {
-        $wsListener = New-Object System.Net.HttpListener
-        $wsListener.Prefixes.Add( $( "http://*:8888/") )
-        $wsListener.Start()
-        if ($wsListener.IsListening) { $wsListener.Stop() }
-        $wsListener.Close()
-        $testData.Add('UserCanRunWebServer',$true)
-    }
-    catch {
-        $testData.Add('UserCanRunWebServer',$false)
-    }
 
     return $testData
 }

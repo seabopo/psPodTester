@@ -16,22 +16,33 @@ Push-Location -Path $scriptRootPath
 
 Import-Module $modulePath -Force
 
+Remove-Item -Path Env:\PSPOD_*
+
 $null | Out-File $( '{0}/http/app.log' -f $modulePath )
 $null | Out-File $( '{0}/http/usr.log' -f $modulePath )
 $null | Out-File $( '{0}/http/msg.log' -f $modulePath )
 
 $Test = @{
-    WebServer        = $true
-    # WebServerDirect  = $true
-    # DumpDebugData    = $true
-    # AutomaticThreads = $true
-    # ManualThreads    = $true
-    # RandomThreads    = $true
-    # CPU              = $true
-    # Memory           = $true
-    # None             = $true
-    # DockerCode       = $true
-    # DockerContainer  = $true
+
+    # WebServerPreset  = $true
+    # WebServer           = $true
+    # WebServerDirect     = $true
+
+    # DefaultStress       = $true
+
+    # DockerCodeWSprofile = $true
+    # DockerCodeCustom    = $true
+
+    DockerContainer  = $true
+
+    # DumpDebugData       = $true
+    # AutomaticThreads    = $true
+    # ManualThreads       = $true
+    # RandomThreads       = $true
+    # CPU                 = $true
+    # Memory              = $true
+    # None                = $true
+
 }
 
 # Clean-up Jobs if you manually abort
@@ -41,23 +52,53 @@ $Test = @{
 # Requies this this session to be running as admin ...
 if ( $Test.WebServerDirect )  { $env:PSPOD_APP_NAME = 'psPodTester'; Start-Webserver -c }
 
-if ( $Test.WebServer )        { Start-Testing -ws -ns -nx -cl -pi }
+if ( $Test.WebServerPreset ) {
+    $env:PSPOD_PRESET_Webserver = 1
+    Start-psPodTesterServices
+}
 
-if ( $Test.DumpDebugData )    { Start-Testing -ns -dd -pi }
+if ( $Test.WebServer ) {
+  $env:PSPOD_TEST_EnableWebServer     = 1
+  $env:PSPOD_TEST_WebServerPort       = 8080
+  $env:PSPOD_TEST_EnableConsoleLogs   = 1
+  $env:PSPOD_TEST_ShowDebugData       = 1
+  $env:PSPOD_TEST_ShowPodInfo         = 1
+  $env:PSPOD_TEST_SendMessages        = 1
+  $env:PSPOD_TEST_MessagePrefix       = 'UniqueMessagePrefix'
+  $env:PSPOD_TEST_NoStress            = 1
+  $env:PSPOD_TEST_NoExit              = 1
+  $env:PSPOD_INFO_PodName             = 'Podname'
+  $env:PSPOD_INFO_ServerName          = 'ServerName'
+  Start-psPodTesterServices
+}
 
-if ( $Test.AutomaticThreads ) { Start-Testing -sd 3 -wi 1 -ci 0 -si 1 -ri 1 -ws }
 
-if ( $Test.ManualThreads )    { Start-Testing -sd 4 -wi 1 -ci 1 -si 1 -ri 1 -ct 3 -mt 3 }
+if ( $Test.DefaultStress ) {
+  $env:PSPOD_TEST_EnableWebServer     = 1
+  $env:PSPOD_TEST_WebServerPort       = 8080
+  $env:PSPOD_TEST_EnableConsoleLogs   = 1
+  $env:PSPOD_TEST_ShowDebugData       = 1
+  $env:PSPOD_TEST_ShowPodInfo         = 1
+  $env:PSPOD_TEST_SendMessages        = 1
+  $env:PSPOD_TEST_MessagePrefix       = 'UniqueMessagePrefix'
+  $env:PSPOD_INFO_PodName             = 'Podname'
+  $env:PSPOD_INFO_ServerName          = 'ServerName'
+  Start-psPodTesterServices
+}
 
-if ( $Test.RandomThreads )    { Start-Testing -sd 5 -wi 0 -ci 0 -si 2 -ri 2 -rz d,w -md 10 }
 
-if ( $Test.CPU )              { Start-Testing -sd 2 -wi 0 -ci 0 -si 1 -ri 1 -NoMemory }
+if ( $Test.DockerCodeWSprofile )
+{
+    Remove-Item -Path Env:\PSPOD_TEST_*
 
-if ( $Test.Memory )           { Start-Testing -sd 2 -wi 0 -ci 0 -si 1 -ri 1 -NoCPU }
+    $env:PSPOD_PRESET_Webserver         = 1
+    $env:PSPOD_TEST_CpuThreads          = 3
 
-if ( $Test.None )             { Start-Testing -sd 5 -wi 0 -ci 0 -si 2 -ri 2 -NoCPU -NoMemory }
+    ..\pspodtester\docker.ps1
 
-if ( $Test.DockerCode )
+}
+
+if ( $Test.DockerCodeCustom )
 {
     Remove-Item -Path Env:\PSPOD_TEST_*
 
@@ -84,11 +125,26 @@ if ( $Test.DockerCode )
     $env:PSPOD_TEST_SendMessages        = 1
     $env:PSPOD_TEST_MessagePrefix       = 'UniqueMessagePrefix'
 
-    #Remove-Item -Path Env:\PSPOD_TEST_*
-
-    .\docker.ps1
+    .\pspodtester\docker.ps1
 
 }
+
+
+if ( $Test.DumpDebugData )    { Start-Testing -ns -dd -pi }
+
+if ( $Test.AutomaticThreads ) { Start-Testing -sd 3 -wi 1 -ci 0 -si 1 -ri 1 -ws }
+
+if ( $Test.ManualThreads )    { Start-Testing -sd 4 -wi 1 -ci 1 -si 1 -ri 1 -ct 3 -mt 3 }
+
+if ( $Test.RandomThreads )    { Start-Testing -sd 5 -wi 0 -ci 0 -si 2 -ri 2 -rz d,w -md 10 }
+
+if ( $Test.CPU )              { Start-Testing -sd 2 -wi 0 -ci 0 -si 1 -ri 1 -NoMemory }
+
+if ( $Test.Memory )           { Start-Testing -sd 2 -wi 0 -ci 0 -si 1 -ri 1 -NoCPU }
+
+if ( $Test.None )             { Start-Testing -sd 5 -wi 0 -ci 0 -si 2 -ri 2 -NoCPU -NoMemory }
+
+
 
 # NOTES:
 #  - Windows Versions:
@@ -112,6 +168,15 @@ if ( $Test.DockerCode )
 #
 if ( $Test.DockerContainer )
 {
+
+    # Test Webserver Preset.
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
+                -e "PSPOD_PRESET_Webserver=1" `
+                -e "PSPOD_TEST_CpuThreads=2" `
+                -it --user ContainerAdministrator `
+                -p 80:80 `
+     mcr.microsoft.com/powershell:lts-nanoserver-1809 `
+     cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   exit
 
@@ -239,6 +304,23 @@ if ( $Test.DockerContainer )
                 -p 80:80 `
                 mcr.microsoft.com/powershell:lts-nanoserver-1809 `
                 cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+
+
+
+
+  # Test Webserver Preset.
+    docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
+                -e "PSPOD_PRESET_Webserver=1" `
+                -e "PSPOD_TEST_CpuThreads=2" `
+                -e "PSPOD_TEST_ShowDebugData=1" `
+                -e "PSPOD_TEST_ShowPodInfo=1" `
+                -it --user ContainerAdministrator `
+                -p 80:80 `
+     mcr.microsoft.com/powershell:lts-nanoserver-1809 `
+     cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
+
+
+
 
   # Test dockerhub images.
     docker run -e "PSPOD_PRESET_Webserver=1" -p 80:80 seabopo/pspodtester:latest

@@ -123,18 +123,9 @@ function Start-Testing
         [Parameter()] [Alias('mt')] [ValidateRange(0, [int]::MaxValue)] [Int]      $MemThreads          = 0,
         [Parameter()] [Alias('rz')] [ValidateSet("d","w","c","s","r")]  [String[]] $RandomizeIntervals  = @(),
         [Parameter()] [Alias('md')] [ValidateRange(0, [int]::MaxValue)] [Int]      $MaxIntervalDuration = 1440,
-        [Parameter()] [Alias('wp')] [ValidateRange(0, [int]::MaxValue)] [Int]      $WebServerPort       = 8080,
-        [Parameter()] [Alias('mp')]                                     [String]   $MessagePrefix,
-        [Parameter()] [Alias('ws')]                                     [Switch]   $EnableWebServer,
-        [Parameter()] [Alias('cl')]                                     [Switch]   $EnableConsoleLogs,
         [Parameter()] [Alias('nc')]                                     [Switch]   $NoCPU,
         [Parameter()] [Alias('nm')]                                     [Switch]   $NoMemory,
-        [Parameter()] [Alias('nx')]                                     [Switch]   $NoExit,
-        [Parameter()] [Alias('ns')]                                     [Switch]   $NoStress,
-        [Parameter()] [Alias('dd')]                                     [Switch]   $ShowDebugData,
-        [Parameter()] [Alias('pi')]                                     [Switch]   $ShowPodInfo,
-        [Parameter()] [Alias('pl')]                                     [Switch]   $PersistLogs,
-        [Parameter()] [Alias('sm')]                                     [Switch]   $SendMessages
+        [Parameter()] [Alias('ns')]                                     [Switch]   $NoStress
     )
 
     begin
@@ -144,7 +135,6 @@ function Start-Testing
 
       # Add and calculate remaining values
         $testData = $testData | Add-CallParameters |
-                                Test-UserIsAdmin | Test-IsContainer | Test-IsNanoServer |
                                 Add-PhysicalMemory | Add-LogicalCores |
                                 Update-MemoryThreadCount | Update-CpuThreadCount |
                                 Update-MaxStressDuration | Update-RandomizedIntervals | Add-TotalIntervalTime |
@@ -155,21 +145,12 @@ function Start-Testing
     {
         try {
 
-            if ( $testData.ShowDebugData ) { Write-Info -h -ps -m "Debug Data" -PSCustomObject $testData }
-
-            if ( $testData.ShowPodInfo ) {
-                Write-Info -p -ps -m $testData.messages.podinfo
-                Get-Item -Path Env:\PSPOD_INFO_* | Sort-Object | ForEach-Object {
-                    Write-Info -m $("{0}: {1}" -f $_.Name.Replace('PSPOD_INFO_',''),$_.Value )
-                }
+            if ( $NoStress ) {
+                Write-Info -p -ps -m $testData.messages.nostress
             }
+            else {
+                Write-EventMessages -m $testData.messages.start -d $testData.TotalIntervalTime
 
-            Write-EventMessages -m $testData.messages.start -d $testData.TotalIntervalTime
-
-            Write-Info -m $testData.messages.container
-            Write-Info -m $testData.messages.adminuser
-
-            if ( -not $NoStress ) {
                 Write-Info -m $testData.messages.cputhreads
                 Write-Info -m $testData.messages.memthreads
                 Write-Info -m $testData.messages.warmint
@@ -178,30 +159,16 @@ function Start-Testing
                 Write-Info -m $testData.messages.stresint
                 Write-Info -m $testData.messages.restint
                 Write-Info -m $testData.messages.randomized
-            }
 
-            if ( $testData.EnableWebServer ) { Invoke-WebServer -TestData $testData }
-
-            if ( $testData.SendMessages ) { Invoke-LogMessages -TestData $testData }
-
-            if ( $NoStress ) {
-                Write-Info -p -ps -m $testData.messages.nostress
-            }
-            else {
                 Write-EventMessages -m $testData.messages.warm -d $testData.WarmUpInterval -Wait
                 Write-EventMessages -m $testData.messages.startcycle -d $testData.StressDuration
+
                 Invoke-StressTests -TestData $testData
+
                 Write-EventMessages -m $testData.messages.cool -d $testData.CoolDownInterval -Wait
                 Write-Info -p -ps -m $testData.messages.completed
             }
 
-            if ( $testData.NoExit ) {
-                Write-Info -p -ps -m $testData.messages.noexit
-                Wait-Event -1
-            }
-            else {
-                Write-Info -p -ps -m $testData.messages.exit
-            }
         }
         catch {
             Write-Info -e -m $testData.messages.error

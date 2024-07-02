@@ -5,19 +5,20 @@ function Invoke-WebServer
         Runs a local webserver.
     #>
     [CmdletBinding()]
-    param ( [Parameter(Mandatory,ValueFromPipeline)] [PSCustomObject] $testData )
+    param ()
 
     process
     {
-        Write-Info -p -ps -m $testData.messages.startingws
+        Write-Info -p -ps -m $USER_MESSAGES.startingws
 
-        if ( $testData.UserIsAdmin ) {
+        $port = $env:PSPOD_TEST_WebServerPort     ??= 80
+        $logs = $env:PSPOD_TEST_EnableConsoleLogs ? '$true' : '$false'
+
+        if ( $ENV_USERISADMIN ) {
             try {
                 Start-Process -FilePath "pwsh" `
-                              -ArgumentList ('-File', $WS_START_PATH, `
-                                             '-Port', $testData.WebServerPort, `
-                                             "-EnableConsoleLogs:$($testData.EnableConsoleLogs)")
-                Write-Info -m $($testData.messages.startedws -f $testData.WebServerPort)
+                              -ArgumentList ('-File', $WS_START_PATH, '-Port', $port, "-EnableConsoleLogs:$($logs)")
+                Write-Info -m $($USER_MESSAGES.startedws -f $port)
                 Start-Sleep -Seconds 3
             }
             catch {
@@ -25,18 +26,18 @@ function Invoke-WebServer
             }
         }
 
-        if ( -not $testData.UserIsAdmin -and $testData.IsContainer ) {
-            Write-Info -e -m $testData.messages.nostartws
+        if ( -not $ENV_USERISADMIN -and $ENV_ISCONTAINER ) {
+            Write-Info -e -m $USER_MESSAGES.nostartws
         }
 
-        if ( $isWindows -and -not $testData.UserIsAdmin -and -not $testData.IsContainer ) {
-            Write-Info -w -m $testData.messages.wselevate
+        if ( $isWindows -and -not $ENV_USERISADMIN -and -not $ENV_ISCONTAINER ) {
+            Write-Info -w -m $USER_MESSAGES.wselevate
             try {
                 Start-Process -FilePath "pwsh" -Verb RunAs `
                               -ArgumentList ('-File', $WS_START_PATH, `
-                                             '-Port', $testData.WebServerPort, `
-                                             "-EnableConsoleLogs:$($testData.EnableConsoleLogs)")
-                Write-Info -m $($testData.messages.startedws -f $testData.WebServerPort)
+                                             '-Port', $port, `
+                                             "-EnableConsoleLogs:$($logs)")
+                Write-Info -m $($USER_MESSAGES.startedws -f $port)
                 Start-Sleep -Seconds 3
             }
             catch {
