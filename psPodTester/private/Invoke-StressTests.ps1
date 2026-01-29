@@ -32,12 +32,20 @@ function Invoke-StressTests
                 if ( $testData.CPUthreads -gt 0 ) {
                     foreach ( $thread in 1..$testData.CPUthreads ){
                         Start-Job -ScriptBlock {
-                            foreach ( $number in 1..2147483647)  {
-                                1..2147483647 | ForEach-Object { $x = 1 }{ $x = $x * $_ }
-                            }
+                            while ( $true ) { $x = 1; 1..99999 | ForEach-Object { $x += $_ ; $x } }
                         } | Out-Null
                     }
                 }
+
+                # if ( $testData.CPUthreads -gt 0 ) {
+                #     foreach ( $thread in 1..$testData.CPUthreads ){
+                #         Start-Job -ScriptBlock {
+                #             foreach ( $number in 1..2147483647)  {
+                #                 1..2147483647 | ForEach-Object { $x = 1 }{ $x = $x * $_ }
+                #             }
+                #         } | Out-Null
+                #     }
+                # }
 
                 if ( $testData.MEMthreads -gt 0 ) {
                     foreach ( $thread in 1..$testData.MEMthreads ){
