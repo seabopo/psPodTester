@@ -134,13 +134,13 @@ function Start-WebServer
                     default        { $contentPath = $WS_APP_LOG_PATH; break }
                 }
 
-                if ( $stressAndRedirect ) {
+                if ( $stressAndRedirect -and -not $NO_ADMIN ) {
                     Write-Info -ps -m $msg.stressing
                     $stressProc = Start-Process -FilePath "pwsh" -ArgumentList ('-File', $DOCKER_PATH) -PassThru
                     $response.Redirect('/applog')
                     $response.Close()
                 }
-                elseif ( $stop ) {
+                elseif ( $stop -and -not $NO_ADMIN ) {
                     $response.Redirect('/applog')
                     $response.Close()
                     start-sleep -seconds 3
@@ -148,7 +148,7 @@ function Start-WebServer
                     $wsListener.Close()
                     Write-Info -ps -m $msg.stopped
                 }
-                elseif ( $kill ) {
+                elseif ( $kill -and -not $NO_ADMIN ) {
                     $response.Redirect('/applog')
                     $response.Close()
                     if ( $stressProc ) {

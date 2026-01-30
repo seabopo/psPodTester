@@ -12,13 +12,17 @@ Set-Variable -Scope 'Local' -Name 'MODULE_NAME' -Value $($PSScriptRoot | Split-P
 Set-Variable -Scope 'Local' -Name 'MODULE_ROOT' -Value $PSScriptRoot
 
 Set-Variable -Scope 'Local' -Name 'WS_ENABLED'       -Value $false
-Set-Variable -Scope 'Local' -Name 'WS_APP_LOG_PATH'  -Value $( '{0}/http/app.log'     -f $PSScriptRoot )
-Set-Variable -Scope 'Local' -Name 'WS_USR_LOG_PATH'  -Value $( '{0}/http/usr.log'     -f $PSScriptRoot )
-Set-Variable -Scope 'Local' -Name 'WS_MSG_LOG_PATH'  -Value $( '{0}/http/msg.log'     -f $PSScriptRoot )
-Set-Variable -Scope 'Local' -Name 'WS_HEADER_PATH'   -Value $( '{0}/http/header.html' -f $PSScriptRoot )
-Set-Variable -Scope 'Local' -Name 'WS_FOOTER_PATH'   -Value $( '{0}/http/footer.html' -f $PSScriptRoot )
-Set-Variable -Scope 'Local' -Name 'WS_START_PATH'    -Value $( '{0}/webserver.ps1'    -f $PSScriptRoot )
-Set-Variable -Scope 'Local' -Name 'DOCKER_PATH'      -Value $( '{0}/docker.ps1'       -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_APP_LOG_PATH'  -Value $( '{0}/http/app.log'        -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_USR_LOG_PATH'  -Value $( '{0}/http/usr.log'        -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_MSG_LOG_PATH'  -Value $( '{0}/http/msg.log'        -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_HEADER_PATH'   -Value $( '{0}/http/header.html'    -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_HEADERNA_PATH' -Value $( '{0}/http/header-na.html' -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_FOOTER_PATH'   -Value $( '{0}/http/footer.html'    -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'WS_START_PATH'    -Value $( '{0}/webserver.ps1'       -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'DOCKER_PATH'      -Value $( '{0}/docker.ps1'          -f $PSScriptRoot )
+Set-Variable -Scope 'Local' -Name 'NO_ADMIN'         -Value $( $env:PSPOD_NOADMIN ? $true : $false )
+
+if ( $NO_ADMIN ) { $WS_HEADER_PATH = $WS_HEADERNA_PATH }
 
 # Load all of the private functions.
   Get-ChildItem -Path "$MODULE_ROOT/Private/*.ps1" -Recurse | ForEach-Object { . $($_.FullName) }
@@ -59,6 +63,7 @@ Set-Variable -Scope 'Local' -Name 'DOCKER_PATH'      -Value $( '{0}/docker.ps1' 
         nostress   = "The NoStress switch was detected.`r`nAll stress intervals will be skipped."
         podinfo    = "POD Information"
         startmsgs  = "The SendMessages switch was detected.`nLogging test messages with prefix '{0}' every 15 seconds ..."
+        disabled   = "Testing is disabled. No tests will be run."
   }
 
 )

@@ -77,7 +77,6 @@ function Start-psPodTesterServices
             }
             Start-Testing @params
 
-
             if ( $env:PSPOD_TEST_NoExit ) {
                 Write-Info -p -ps -m $USER_MESSAGES.noexit
                 Wait-Event -1
