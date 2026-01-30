@@ -23,9 +23,14 @@ A variety of Windows and Docker usage examples are available in the
 A Windows Nano Server image of this module is available here: 
 [seabopo/pspodtester](https://hub.docker.com/r/seabopo/pspodtester)
 
-The following docker command runs the web server:
+The following docker command runs the web server with testing options enabled:
 ```
 docker run -e "PSPOD_PRESET_Webserver=1" -p 80:80 seabopo/pspodtester:latest
+```
+
+The following docker command runs the web server without testing options enabled:
+```
+docker run -e "PSPOD_PRESET_Webserver=1" -e "PSPOD_NOADMIN=1" -p 80:80 seabopo/pspodtester:latest
 ```
 
 This is a sample AKS deployment of the webserver:
@@ -63,6 +68,8 @@ spec:
         env:
         - name: PSPOD_APP_NAME
           value: "AppTester-CD"
+        - name: PSPOD_NOADMIN
+          value: "1"
         - name: PSPOD_PRESET_Webserver
           value: "1"
         - name: PSPOD_TEST_MessagePrefix

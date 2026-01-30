@@ -172,7 +172,7 @@ if ( $Test.DockerContainer )
     # Test Webserver Preset.
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_PRESET_Webserver=1" `
-                -e "PSPOD_TEST_CpuThreads=2" `
+                -e "PSPOD_NOADMIN=1" `
                 -it --user ContainerAdministrator `
                 -p 80:80 `
      mcr.microsoft.com/powershell:lts-nanoserver-1809 `
