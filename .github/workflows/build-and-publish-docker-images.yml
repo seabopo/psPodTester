@@ -1,5 +1,5 @@
 
-name: Build and Publish Docker Images
+name: Build and Publish Docker 2019 and 2022 Images
 
 on:
   workflow_dispatch:
@@ -46,9 +46,29 @@ jobs:
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
 
+  win1809:
+    name: Build Windows 2019 Image
+    runs-on: windows-2019
+    needs: getReleaseVersion
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and Push Docker Image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: seabopo/pspodtester
+          tags: ${{ github.run_id }}-${{ github.run_number }}-nanoserver-1809-${{ env.RELEASE }}, nanoserver-1809-${{ env.RELEASE }}, nanoserver-1809
+          registry: docker.io
+          dockerfile: ./docker/dockerfile
+          buildArgs: BASE_IMAGE=mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809, APP_VERSION=${{ env.RELEASE }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        env:
+          RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
+
   multiarch:
     name: Build Windows Multi-Arch Image
-    needs: [getReleaseVersion, win2022]
+    needs: [getReleaseVersion, win2022, win1809]
     runs-on: windows-2022
     steps:
       - uses: docker/login-action@v3

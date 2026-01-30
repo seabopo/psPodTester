@@ -10,6 +10,7 @@
 #   Put the app in a subdirectory to avoid security errors during installation.
 #
 #    docker build -t "seabopo/pspodtester:nanoserver-1809-v1.2.0" -t "seabopo/pspodtester:nanoserver-1809" .
+#    docker push seabopo/pspodtester:nanoserver-1809-v1.2.0
 #
 
 ARG BASE_IMAGE=mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809
