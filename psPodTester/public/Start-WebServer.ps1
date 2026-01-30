@@ -124,7 +124,7 @@ function Start-WebServer
                                             }
                                        ) -join "`r`n" )
                         $showheaders = $true
-                        "break"
+                        break
                     }
                     "GET /userlog" { $contentPath = $WS_USR_LOG_PATH; break }
                     "GET /applog"  { $contentPath = $WS_APP_LOG_PATH; break }
