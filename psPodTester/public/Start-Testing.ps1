@@ -27,14 +27,14 @@ function Start-Testing
 
     .PARAMETER WarmUpInterval
         OPTIONAL. Integer. Alias: -wi. The time, in minutes, to wait before starting the stress/rest intervals.
-        A single Warm Up Interval is exectuted at the start of the session. The Warm Up Interval is not included
+        A single Warm Up Interval is executed at the start of the session. The Warm Up Interval is not included
         in the StressDuration.
         Default Value: 0.
 
     .PARAMETER CoolDownInterval
         OPTIONAL. Integer. Alias: -ci. The time, in minutes, to wait after the stress/rest intervals have
-        completed before exiting the PowerShell process. A single Coold Down Interval is exectuted at the end of
-        the session. The Coold Down Interval is not included in the StressDuration.
+        completed before exiting the PowerShell process. A single Cool Down Interval is executed at the end of
+        the session. The Cool Down Interval is not included in the StressDuration.
         Default Value: 0.
 
     .PARAMETER CpuThreads
@@ -73,7 +73,7 @@ function Start-Testing
     .PARAMETER NoExit
         OPTIONAL. Switch. Alias: -nx. Prevents the PowerShell process from exiting after the Cool Down Interval
         has ended. Use this setting to emulate a service in k8s or other systems that use a scheduler so the
-        StressDuration paramater is honored and scheduler doesn't keep restarting the the container/pod.
+        StressDuration parameter is honored and scheduler doesn't keep restarting the the container/pod.
 
     .PARAMETER NoStress
         OPTIONAL. Switch. Alias: -ns. Disables all testing stress intervals (warm, stress, rest, cool).
