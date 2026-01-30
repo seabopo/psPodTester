@@ -25,7 +25,8 @@ function Start-LogMessages
                 $msg = '{0} {1}: {2} {3}.' -f $(Get-Date -Format s),$MessagePrefix,'Message #',$number
                 $msg | Out-File $filePath -Append
                 if ( $EnableConsoleLogs ) { Write-Host $msg }
-                Start-Sleep -Seconds 15
+                $waitTime = $( ([int]$number -le 120) ? 15 : (([int]$number -le 150) ? 60 : 900) )
+                Start-Sleep -Seconds $waitTime
             }
         }
         Start-Process pwsh -ArgumentList "-command (Invoke-Command -ScriptBlock {$cmd} -ArgumentList $p,$f,$c)"
