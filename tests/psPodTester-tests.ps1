@@ -24,9 +24,9 @@ $null | Out-File $( '{0}/http/msg.log' -f $modulePath )
 
 $Test = @{
 
-    DockerContainer  = $true
+    # DockerContainer  = $true
 
-    # DockerContainerMount  = $true
+    DockerContainerMount  = $true
 
     # WebServerPreset     = $true
 
@@ -175,7 +175,7 @@ if ( $Test.DockerContainerMount ) {
                 -e "PSPOD_NOADMIN=1" `
                 -it --user ContainerAdministrator `
                 -p 80:80 `
-     mcr.microsoft.com/powershell:lts-nanoserver-1809 `
+     mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 `
      cmd /c pwsh -ExecutionPolicy Bypass -command "/psPodTester/docker.ps1"
 
   exit

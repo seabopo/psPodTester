@@ -55,7 +55,11 @@ function Start-psPodTesterServices
             }
 
           # Enable the sending of log messages if specified.
-            if ( $env:PSPOD_TEST_SendMessages ) { Invoke-LogMessages }
+            if ( $env:PSPOD_TEST_SendMessages ) {
+                Invoke-LogMessages
+            } else {
+                "Messages not enabled." | Out-File $WS_MSG_LOG_PATH
+            }
 
           # Enable the Web Server if specified.
             if ( $env:PSPOD_TEST_EnableWebServer ) { Invoke-WebServer }
