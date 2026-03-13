@@ -30,9 +30,9 @@ function Start-psPodTesterServices
                 $env:PSPOD_TEST_NoStress            = 1
                 $env:PSPOD_TEST_NoExit              = 1
                 $env:PSPOD_TEST_WebServerPort     ??= 80
-                $env:PSPOD_TEST_SendMessages      ??= 1
-                $env:PSPOD_TEST_MessagePrefix     ??= 'psPodTesterMessagePrefix'
-                $env:PSPOD_TEST_ShowDebugData     ??= 1
+              # $env:PSPOD_TEST_SendMessages      ??= 1
+              # $env:PSPOD_TEST_MessagePrefix     ??= 'psPodTesterMessagePrefix'
+              # $env:PSPOD_TEST_ShowDebugData     ??= 1
                 $env:PSPOD_TEST_EnableConsoleLogs ??= 1
                 $env:PSPOD_TEST_ShowPodInfo       ??= 1
             }
