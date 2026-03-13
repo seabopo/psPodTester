@@ -55,6 +55,7 @@ if ( $Test.WebServerDirect )  { $env:PSPOD_APP_NAME = 'psPodTester'; Start-Webse
 if ( $Test.WebServerPreset ) {
     Remove-Item -Path Env:\PSPOD_TEST_*
     $env:PSPOD_PRESET_Webserver = 1
+    $env:PSPOD_NOADMIN = 1
     Start-psPodTesterServices
 }
 
@@ -162,7 +163,7 @@ if ( $Test.DockerContainer ) {
     docker run  -e "PSPOD_PRESET_Webserver=1" `
                 -e "PSPOD_NOADMIN=1" `
                 -p 80:80 `
-                seabopo/pspodtester:nanoserver-1809-v1.2.0
+                seabopo/pspodtester:latest #nanoserver-1809-v1.2.0
     exit
 }
 

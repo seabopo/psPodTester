@@ -34,10 +34,10 @@ function Start-WebServer
 
             :wsListener while ($wsListener.IsListening)
             {
-                $context   = $wsListener.GetContext()
-                $request   = $context.Request
-                $response  = $context.Response
-                $uri       = "{0} {1}" -f $request.httpMethod, $request.Url.LocalPath
+                $context  = $wsListener.GetContext()
+                $request  = $context.Request
+                $response = $context.Response
+                $uri      = "{0} {1}" -f $request.httpMethod, $request.Url.LocalPath
 
                 $log = $( "{0} {1} {2} {3} {4}" -f $(Get-Date -Format s),
                                                    $request.RemoteEndPoint.Address.ToString(),
@@ -49,15 +49,17 @@ function Start-WebServer
 
                 if ( $EnableConsoleLogs ) { Write-Info -m $log -nl }
 
-                $showheaders = $false
+                $showHealth        = $false
+                $showheaders       = $false
+                $showpodrequest    = $false
                 $stressAndRedirect = $false
-                $stop = $false
-                $kill = $false
-                $appName    = $env:PSPOD_APP_NAME ??= 'psPodTester'
-                $cpuThreads = $env:PSPOD_TEST_CpuThreads ??= 0
-                $memThreads = $env:PSPOD_TEST_MemThreads ??= 0
-                $noCPU      = if ( $env:PSPOD_TEST_NoCPU )    { $true } else { $false }
-                $noMem      = if ( $env:PSPOD_TEST_NoMemory ) { $true } else { $false }
+                $stop              = $false
+                $kill              = $false
+                $appName           = $env:PSPOD_APP_NAME ??= 'psPodTester'
+                $cpuThreads        = $env:PSPOD_TEST_CpuThreads ??= 0
+                $memThreads        = $env:PSPOD_TEST_MemThreads ??= 0
+                $noCPU             = if ( $env:PSPOD_TEST_NoCPU )    { $true } else { $false }
+                $noMem             = if ( $env:PSPOD_TEST_NoMemory ) { $true } else { $false }
 
                 switch ($uri)
                 {
@@ -126,12 +128,68 @@ function Start-WebServer
                         $showheaders = $true
                         break
                     }
-                    "GET /userlog" { $contentPath = $WS_USR_LOG_PATH; break }
-                    "GET /applog"  { $contentPath = $WS_APP_LOG_PATH; break }
-                    "GET /msglog"  { $contentPath = $WS_MSG_LOG_PATH; break }
-                    "GET /stop"    { $stop = $true; break }
-                    "GET /kill"    { $kill = $true; break }
-                    default        { $contentPath = $WS_APP_LOG_PATH; break }
+                    "GET /podrequest" {
+                        $podrqst = "`r`n" +
+                                   "--------------------`r`n" +
+                                   "OUTBOUND POD REQUEST`r`n" +
+                                   "--------------------`r`n`r`n"+
+                                   "Cloudflare Trace Information (www.cloudflare.com/cdn-cgi/trace):`r`n"
+                        try {
+                            $r = Invoke-WebRequest -Uri 'https://www.cloudflare.com/cdn-cgi/trace'
+                            if ($r.StatusCode -eq 200) {
+                                $rr = $r.Content | ConvertFrom-StringData
+                                $podrqst += "  Client IP Address           :: $($rr.ip)`r`n" +
+                                            "  Client IP Location          :: $($rr.loc)`r`n" +
+                                            "  Client User Agent           :: $($rr.uag)`r`n" +
+                                            "  Client Request Host         :: $($rr.h)`r`n" +
+                                            "  Client Request Scheme       :: $($rr.visit_scheme)`r`n" +
+                                            "  Client Request HTTP Version :: $($rr.http)`r`n" +
+                                            "  Client Request TLS Version  :: $($rr.tls)`r`n" +
+                                            "  Cloudflare Edge Location    :: $($rr.colo)`r`n"
+                            } else {
+                               $podrqst += "Failed to retrieve request information. Status code: $($r.StatusCode)`r`n"
+                            }
+                        }
+                        catch {
+                             $podrqst += "Failed to retrieve request information. Status code: $($_.Exception.Message)`r`n"
+                        }
+                        $podrqst += "`r`nIP-API Information (ip-api.com):`r`n" +
+                                    "  IP Address   :: $($rr.ip)`r`n"
+                        try {
+                            $r = Invoke-WebRequest -Uri "http://ip-api.com/json/$($rr.ip)"
+                            if ($r.StatusCode -eq 200) {
+                                $rr = $r.Content | ConvertFrom-JSON
+                                if ( $rr.status -eq 'success' ) {
+                                    $podrqst += "  ISP          :: $($rr.isp)`r`n" +
+                                                "  Org          :: $($rr.org)`r`n" +
+                                                "  AS Number    :: $($rr.as)`r`n" +
+                                                "  Country      :: $($rr.country)`r`n" +
+                                                "  Country Code :: $($rr.countryCode)`r`n" +
+                                                "  Region       :: $($rr.region)`r`n" +
+                                                "  Region Name  :: $($rr.regionName)`r`n" +
+                                                "  Timezone     :: $($rr.timezone)`r`n"
+                                }
+                            } else {
+                               $podrqst += "Failed to retrieve request information. Status code: $($r.StatusCode)`r`n"
+                            }
+                        }
+                        catch {
+                             $podrqst += "Failed to retrieve request information. Status code: $($_.Exception.Message)`r`n"
+                        }
+                        $showpodrequest = $true
+                        break
+                    }
+                    "GET /healthz"      { $showHealth = $true; $health = 'OK'; break }
+                    "GET /healthzready" { $showHealth = $true; $health = 'OK'; break }
+                    "GET /healthzlive"  { $showHealth = $true; $health = 'OK'; break }
+                    "GET /en-us"        { $showHealth = $true; $health = 'OK'; break }
+                    "GET /en-us/"       { $showHealth = $true; $health = 'OK'; break }
+                    "GET /userlog"      { $contentPath = $WS_USR_LOG_PATH; break }
+                    "GET /applog"       { $contentPath = $WS_APP_LOG_PATH; break }
+                    "GET /msglog"       { $contentPath = $WS_MSG_LOG_PATH; break }
+                    "GET /stop"         { $stop = $true; break }
+                    "GET /kill"         { $kill = $true; break }
+                    default             { $contentPath = $WS_APP_LOG_PATH; break }
                 }
 
                 if ( $stressAndRedirect -and -not $NO_ADMIN ) {
@@ -161,9 +219,19 @@ function Start-WebServer
                     Get-Process "pwsh" | Stop-Process
                 }
                 else {
-                    if ( $showheaders ) {
+                    if ( $showHealth ) {
+                        $ResponseText = $((Get-Content -path $WS_HEADER_PATH) -Join "`r`n").Replace('##APPNAME##',$appName) +
+                                        $health +
+                                        $((Get-Content -path $WS_FOOTER_PATH) -Join "`r`n")
+                    }
+                    elseif ( $showheaders ) {
                         $ResponseText = $((Get-Content -path $WS_HEADER_PATH) -Join "`r`n").Replace('##APPNAME##',$appName) +
                                         $headers +
+                                        $((Get-Content -path $WS_FOOTER_PATH) -Join "`r`n")
+                    }
+                    elseif ( $showpodrequest ) {
+                        $ResponseText = $((Get-Content -path $WS_HEADER_PATH) -Join "`r`n").Replace('##APPNAME##',$appName) +
+                                        $podrqst +
                                         $((Get-Content -path $WS_FOOTER_PATH) -Join "`r`n")
                     }
                     else {
