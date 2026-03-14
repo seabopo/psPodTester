@@ -24,9 +24,9 @@ $null | Out-File $( '{0}/http/msg.log' -f $modulePath )
 
 $Test = @{
 
-    # DockerContainer  = $true
+    DockerContainer  = $true
 
-    DockerContainerMount  = $true
+    # DockerContainerMount  = $true
 
     # WebServerPreset     = $true
 
