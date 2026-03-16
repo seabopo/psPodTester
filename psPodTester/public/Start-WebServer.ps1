@@ -132,8 +132,16 @@ function Start-WebServer
                         $podrqst = "`r`n" +
                                    "--------------------`r`n" +
                                    "OUTBOUND POD REQUEST`r`n" +
-                                   "--------------------`r`n`r`n"+
-                                   "Cloudflare Trace Information (www.cloudflare.com/cdn-cgi/trace):`r`n"
+                                   "--------------------`r`n`r`n"
+                        if ( $env:PSPOD_TEST_ShowPodInfo ) {
+                            $podrqst += "Pod Info:`r`n" +
+                                        "  Pod Name      :: $($env:PSPOD_INFO_POD_NAME)`r`n" +
+                                        "  Pod IP        :: $($env:PSPOD_INFO_POD_IP)`r`n" +
+                                        "  Pod Namespace :: $($env:PSPOD_INFO_POD_NAMESPACE)`r`n" +
+                                        "  Node Name     :: $($env:PSPOD_INFO_NODE_NAME)`r`n" +
+                                        "  Node IP       :: $($env:PSPOD_INFO_NODE_IP)`r`n"
+                        }
+                        $podrqst += "`r`nCloudflare Trace Information (www.cloudflare.com/cdn-cgi/trace):`r`n"
                         try {
                             $r = Invoke-WebRequest -Uri 'https://www.cloudflare.com/cdn-cgi/trace'
                             if ($r.StatusCode -eq 200) {

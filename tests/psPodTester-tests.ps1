@@ -24,9 +24,9 @@ $null | Out-File $( '{0}/http/msg.log' -f $modulePath )
 
 $Test = @{
 
-    DockerContainer  = $true
+    # DockerContainer  = $true
 
-    # DockerContainerMount  = $true
+    DockerContainerMount  = $true
 
     # WebServerPreset     = $true
 
@@ -162,6 +162,11 @@ if ( $Test.DockerContainer ) {
   # Test Webserver Preset using the latest build.
     docker run  -e "PSPOD_PRESET_Webserver=1" `
                 -e "PSPOD_NOADMIN=1" `
+                -e "PSPOD_INFO_POD_NAME=podname" `
+                -e "PSPOD_INFO_POD_IP=podip" `
+                -e "PSPOD_INFO_POD_NAMESPACE=namespace" `
+                -e "PSPOD_INFO_NODE_NAME=nodename" `
+                -e "PSPOD_INFO_NODE_IP=nodeip" `
                 -p 80:80 `
                 seabopo/pspodtester:latest #nanoserver-1809-v1.2.0
     exit
@@ -174,6 +179,11 @@ if ( $Test.DockerContainerMount ) {
     docker run  --mount type=bind,source=C:\Repos\Github\psPodTester\psPodTester,target=C:\psPodTester `
                 -e "PSPOD_PRESET_Webserver=1" `
                 -e "PSPOD_NOADMIN=1" `
+                -e "PSPOD_INFO_POD_NAME=podname" `
+                -e "PSPOD_INFO_POD_IP=podip" `
+                -e "PSPOD_INFO_POD_NAMESPACE=namespace" `
+                -e "PSPOD_INFO_NODE_NAME=nodename" `
+                -e "PSPOD_INFO_NODE_IP=nodeip" `
                 -it --user ContainerAdministrator `
                 -p 80:80 `
      mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 `
