@@ -71,7 +71,7 @@
             pid                = $env:PSPOD_WEBS_PID                ?? 0
             port               = $env:PSPOD_WEBS_WebServerPort      ?? 80
             appName            = $env:PSPOD_WEBS_AppName            ?? 'PodTester'
-            ignoreEnvVariables = $env:PSPOD_WEBS_IgnoreEnvVariables ?? @('*SCRT*','*SECRET*','*PASS*','*KEY*','*TOKEN*')
+            ignoreEnvVariables = $env:PSPOD_WEBS_IgnoreEnvVariables ?? @('*SCRT*','*SECRET*','*PASS*','*KEY*','*TOKEN*','PSPOD_WEBS_Admin*')
             content            = [Hashtable] @{ }
         }
 
@@ -87,7 +87,6 @@
             enabled                  = $env:PSPOD_TEST_EnableTesting                     ? $true : $false
             areRunning               = $env:PSPOD_TEST_AreRunning                        ? $true : $false
             pid                      = $env:PSPOD_TEST_PID                              ?? 0
-            noexit                   = $env:PSPOD_TEST_NoExit                            ? $true : $false
             noCPU                    = $env:PSPOD_TEST_NoCPU                             ? $true : $false
             noMemory                 = $env:PSPOD_TEST_NoMemory                          ? $true : $false
             duration                 = $env:PSPOD_TEST_StressDuration                   ?? 5
@@ -131,9 +130,6 @@
                 noEnvInfo  = 'Environment variable display is not enabled.'
                 envInfo    = 'Environment variable display is enabled.'
                 envInfoHdr = 'The following environment variables were found:'
-                noexit     = 'The NoExit switch was detected.' + [System.Environment]::NewLine +
-                             'The initialization process will now wait indefinitely.' + [System.Environment]::NewLine +
-                             'The container will remain running even if all other services are stopped.'
                 complete   = 'The initialization process is now complete.'
             }
 

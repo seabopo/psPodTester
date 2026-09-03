@@ -1,7 +1,7 @@
 function Start-WebServer {
     <#
     .DESCRIPTION
-        Runs a local webserver.
+        Runs a local webserver with information and debugging functions.
     #>
     [CmdletBinding()]
     param ()
@@ -31,18 +31,12 @@ function Start-WebServer {
 
                 switch ( $se.uri ) {
 
-
-                #     "GET /connectivity" { }
-                #     "GET /stress"       { }
-
-                #     "GET /stress10"     { }
-                #     "GET /stress30"     { }
-                #     "GET /stress10x4"   { }
-                #     "GET /stressbreak"  { }
-
-                #     "GET /stopweb"      { }
-                #     "GET /kill"         { }
-
+                  # "GET /stress10"     { }
+                  # "GET /stress30"     { }
+                  # "GET /stress10x4"   { }
+                  # "GET /stressbreak"  { }
+                  # "GET /stopweb"      { }
+                  # "GET /kill"         { }
 
                     "GET /help"         { $se | Set-FileResponse -f $PS.path.help   -t 'About This App'           }
                     "GET /podinfo"      { $se | Set-FileResponse -f $PS.path.dbgLog -t 'Container Properties'  -p }

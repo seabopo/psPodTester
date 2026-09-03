@@ -1,24 +1,5 @@
 
 Automated container messages are enabled.
 
-Logging test messages with prefix "PodTester" every 30 seconds ...
-2024-10-30T11:55:12 PodTester: Message # 1.
-2024-10-30T11:55:42 PodTester: Message # 2.
-2024-10-30T11:56:12 PodTester: Message # 3.
-2024-10-30T11:56:42 PodTester: Message # 4.
-2024-10-30T11:57:12 PodTester: Message # 5.
-2024-10-30T11:57:42 PodTester: Message # 6.
-2024-10-30T11:58:12 PodTester: Message # 7.
-2024-10-30T11:58:42 PodTester: Message # 8.
-2024-10-30T11:59:12 PodTester: Message # 9.
-2024-10-30T11:59:42 PodTester: Message # 10.
-2024-10-30T12:00:12 PodTester: Message # 11.
-2024-10-30T12:00:42 PodTester: Message # 12.
-2024-10-30T12:01:12 PodTester: Message # 13.
-2024-10-30T12:01:42 PodTester: Message # 14.
-2024-10-30T12:02:12 PodTester: Message # 15.
-2024-10-30T12:02:42 PodTester: Message # 16.
-2024-10-30T12:03:12 PodTester: Message # 17.
-2024-10-30T12:03:42 PodTester: Message # 18.
-2024-10-30T12:04:12 PodTester: Message # 19.
-2024-10-30T12:04:42 PodTester: Message # 20.
+Logging test messages with prefix "PodTester" every 300 seconds ...
+2026-09-03T01:00:54 PodTester: Message # 1.

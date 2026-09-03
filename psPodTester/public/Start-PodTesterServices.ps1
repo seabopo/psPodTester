@@ -1,7 +1,7 @@
 function Start-PodTesterServices {
     <#
     .DESCRIPTION
-        Starts the core container services: WebServer, SendMessages, and Testing.
+        Starts the core container services: WebServer, SendMessages.
     #>
 
     [CmdletBinding()]
@@ -47,28 +47,14 @@ function Start-PodTesterServices {
               Write-Info -f a,m -ps -ps -m $PS.usrmsg.msg.noenabled
           }
 
-        # Start the testing service.
-          if ( $PS.tests.enabled -and $PS.tests.pid -eq 0 ) {
-
-              Write-Info -f a -p -ps -m $PS.usrmsg.tst.enabled
-              $cmd = {
-                  param( [string] $ModuleRootPath )
-                  Import-Module $ModuleRootPath
-                  Start-Testing
-              }
-              $argList = "-command (Invoke-Command -ScriptBlock {$cmd} -ArgumentList $($PS.path.moduleRoot))"
-              $PS.tests.pid = ( Start-Process -FilePath "pwsh" -ArgumentList $argList -PassThru ).id
-              $env:PSPOD_TEST_PID = $PS.tests.pid
-
-          } elseif ( -not $PS.tests.enabled ) {
-            Write-Info -f a -p -ps -m $PS.usrmsg.tst.noenabled
-          }
+        # Let the message service start.
+          Start-Sleep -Seconds 2
 
         # Start the web server LAST so it has access to all environment variables, including the PIDs of the
         # other services, so that it can manage them in it's process.
           if ( $PS.webServer.enabled -and $PS.webServer.pid -eq 0 ) {
 
-              Write-Info -f a -p -ps -m $PS.usrmsg.tst.enabled
+              Write-Info -f a -p -ps -m $PS.usrmsg.web.enabled
               $cmd = {
                   param( [string] $ModuleRootPath )
                   Import-Module $ModuleRootPath
@@ -92,23 +78,20 @@ function Start-PodTesterServices {
 
           }
 
+        # Let the webserver start.
+          Start-Sleep -Seconds 2
+
           if ( -not $PS.initialized ) {
 
             # Set the initialized flag so nothing is re-initialized if services are managed from the web server.
               $PS.initialized = $true
 
-            # Pause indefinitely if the noexit flag is set.
-              if ( $PS.tests.noexit ) {
-                  Write-Info -f a -p -ps -m $PS.usrmsg.app.noexit
-                  Wait-Event -1
-              }
-              else {
-                  Write-Info -f a -p -ps -m $PS.usrmsg.app.complete
-              }
+              Write-Info -f a -p -ps -m $PS.usrmsg.app.complete
+
+            # Pause the init process indefinitely so other processes don't fail.
+              Wait-Event -1
 
           }
-
-          Start-Sleep -Seconds 5
 
         }
         catch {

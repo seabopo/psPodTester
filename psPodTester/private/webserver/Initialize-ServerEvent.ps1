@@ -35,9 +35,10 @@ function Initialize-ServerEvent {
 
             }
 
-            if ( -not $serverEvent.allowAdmin ) {
+          # Disable check until tests are added.
+            # if ( -not $serverEvent.allowAdmin ) {
                 $ServerEvent.content.sidebarTesting = ''
-            }
+            # }
 
             $ServerEvent.content.contentType = 'text/HTML'
 

@@ -3,10 +3,10 @@ Container information display is enabled.
 
 Container Environment Information
 ... Running in Container: False
-... Running on Platform: MacOS (14.6.1)
+... Running on Platform: MacOS (26.6.2)
 ... Running on ARM CPU: True
 ... Host has CIM: False
-... Logical Cores: 10
+... Logical Cores: 18
 ... Physical Memory: 65536 GB
 ... User is Admin: False
 ... User can Elevate: False
@@ -18,25 +18,22 @@ Container Deployment Information (PS_PODINFO_* Environment Variables)
 Environment variable display is enabled.
 
 The following environment variables were found:
-... _: /usr/local/bin/pwsh
+... _: /usr/local/microsoft/powershell/7/pwsh
 ... __CF_USER_TEXT_ENCODING: 0x1F5:0x0:0x0
 ... __CFBundleIdentifier: com.microsoft.VSCode
+... CLAUDE_CODE_SSE_PORT: 65023
 ... COLORTERM: truecolor
 ... COMMAND_MODE: unix2003
+... COPILOT_DEBUG_NONCE: 1714ad539b8e08b7c805eb97ea9aa805
 ... HOME: /Users/sean
-... HOMEBREW_CELLAR: /opt/homebrew/Cellar
-... HOMEBREW_PREFIX: /opt/homebrew
-... HOMEBREW_REPOSITORY: /opt/homebrew
-... INFOPATH: /opt/homebrew/share/info:
-... LANG: en_US.UTF-8
+... LANG: C.UTF-8
 ... LOGNAME: sean
 ... MallocNanoZone: 0
 ... OLDPWD: /Users/sean/Repos/@psModules/psPodTester
-... ORIGINAL_XDG_CURRENT_DESKTOP: undefined
-... PATH: /usr/local/microsoft/powershell/7:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/go/bin:/opt/homebrew/bin:/opt/homebrew/sbin
+... OSLogRateLimit: 64
+... PATH: /usr/local/microsoft/powershell/7:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/opt/homebrew/bin:/Users/sean/Library/Application Support/Code/User/globalStorage/github.copilot-chat/debugCommand:/Users/sean/Library/Application Support/Code/User/globalStorage/github.copilot-chat/copilotCli
 ... POWERSHELL_DISTRIBUTION_CHANNEL: PSES
-... PSModulePath: /Users/sean/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/usr/local/microsoft/powershell/7/Modules:/Users/sean/.vscode/extensions/ms-vscode.powershell-2024.2.2/modules
-... PSPOD_APP_NAME: psPodTester - Testing Webserver Local Preset Values
+... PSModulePath: /Users/sean/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/usr/local/microsoft/powershell/7/Modules:/Users/sean/.vscode/extensions/ms-vscode.powershell-2025.4.0/modules
 ... PSPOD_ENV_CanRunAs: 0
 ... PSPOD_ENV_CanRunWebServer: 1
 ... PSPOD_ENV_HasCIM: 0
@@ -44,13 +41,13 @@ The following environment variables were found:
 ... PSPOD_ENV_IsArmCPU: 1
 ... PSPOD_ENV_IsContainer: 0
 ... PSPOD_ENV_IsNanoServer: 0
-... PSPOD_ENV_LogicalCores: 10
+... PSPOD_ENV_LogicalCores: 18
 ... PSPOD_ENV_osPlatform: MacOS
-... PSPOD_ENV_osVersion: 14.6.1
+... PSPOD_ENV_osVersion: 26.6.2
 ... PSPOD_ENV_PhysicalMemory: 65536
 ... PSPOD_MSGS_SendMessages: 1
-... PSPOD_MSGS_SendPeriod: 30
-... PSPOD_TEST_EnableTesting: 1
+... PSPOD_MSGS_SendPeriod: 300
+... PSPOD_WEBS_AppName: psPodTester
 ... PSPOD_WEBS_EnableWebServer: 1
 ... PSPOD_WEBS_PresetUsed: 1
 ... PSPOD_WEBS_ShowEnvVariables: 1
@@ -58,12 +55,13 @@ The following environment variables were found:
 ... PWD: /Users/sean/Repos/@psModules/psPodTester
 ... SHELL: /bin/zsh
 ... SHLVL: 0
-... SSH_AUTH_SOCK: /private/tmp/com.apple.launchd.Po0GFFnkun/Listeners
+... SSH_AUTH_SOCK: /var/run/com.apple.launchd.7paA7PrMil/Listeners
 ... TERM: xterm-256color
 ... TERM_PROGRAM: vscode
-... TERM_PROGRAM_VERSION: 1.94.2
-... TMPDIR: /var/folders/gl/28whcr4x3nsgmzfw03js2t3c0000gn/T/
+... TERM_PROGRAM_VERSION: 1.134.0
+... TMPDIR: /var/folders/r7/xlrrm9m109bfltsvxdpx0cmc0000gn/T/
 ... USER: sean
-... VSCODE_GIT_IPC_HANDLE: /var/folders/gl/28whcr4x3nsgmzfw03js2t3c0000gn/T/vscode-git-add2d23a03.sock
+... VSCODE_GIT_IPC_HANDLE: /var/folders/r7/xlrrm9m109bfltsvxdpx0cmc0000gn/T/vscode-git-83226808f6.sock
+... VSCODE_NONCE: b4613e3a-3f73-4338-9004-3c65eb7a9de3
 ... XPC_FLAGS: 0x0
-... XPC_SERVICE_NAME: application.com.microsoft.VSCode.38968367.38968373
+... XPC_SERVICE_NAME: application.com.microsoft.VSCode.22680067.22680073

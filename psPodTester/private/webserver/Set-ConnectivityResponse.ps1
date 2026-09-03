@@ -45,6 +45,7 @@ function Set-ConnectivityResponse {
 
         }
         catch {
+            write-host $_.Exception.Message
             Write-Info -f a -e -l -m $_.Exception.Message
             Start-Sleep -Seconds 1
         }
