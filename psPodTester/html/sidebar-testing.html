@@ -1,0 +1,28 @@
+          <!-- SIDEBAR-TESTING-START -->
+          <div class="section-separator"></div>
+          <div class="link-section">
+            <h4 class="section-title">Tests</h4>
+            <a href="/stress10" class="link-item" title="Runs a single 10 minute CPU stress interval.">
+              <i class="uil uil-fire"></i> 10 Minute CPU Stress
+            </a>
+            <a href="/stress30" class="link-item" title="Runs a single 30 minute CPU stress interval.">
+              <i class="uil uil-fire"></i> 30 Minute CPU Stress
+            </a>
+            <a href="/stress10x4" class="link-item" title="Repeats 10 minute stress intervals followed by 20 minute rest intervals for 4 hours.">
+              <i class="uil uil-fire"></i> 4 Hour CPU Stress
+            </a>
+            <a href="/stressbreak" class="link-item" title="Runs a 4 hour stress interval with 8 cpu threads and 4 memory threads.">
+              <i class="uil uil-tachometer-fast-alt"></i> Break the Pod
+            </a>
+            <a href="/stophealthz" class="link-item" title="Sets Healthz responses to Service Unavailable (503).">
+              <i class="uil uil-shield-plus"></i> Stop Healthz
+            </a>
+            <a href="/stopweb" class="link-item" title="Stops the web listener service but leaves any other services (testing or logging) running.">
+              <i class="uil uil-stop-circle"></i> Stop the Web Listener
+            </a>
+            <a href="/kill" class="link-item" title="Kills all pod services. The host should restart the pod.">
+              <i class="uil uil-x"></i> Kill all Pod Services
+            </a>
+          </div>
+          <!--div class="section-separator"></div-->
+          <!-- SIDEBAR-TESTING-END -->

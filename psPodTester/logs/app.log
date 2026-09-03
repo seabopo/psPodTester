@@ -1,0 +1,139 @@
+Container started at: 2024-10-30 11:55:12
+
+Container information display is enabled.
+
+Environment variable display is enabled.
+
+Automated container messages are enabled.
+
+Automated stress tests are enabled.
+
+The initialization process is now complete.
+
+Logging test messages with prefix "PodTester" every 30 seconds ...
+
+Test Summary
+... Start Time: 10/30/2024 11:56:12 AM
+... End Time: 10/30/2024 12:01:12 PM
+... Duration: 5 minutes
+... CPU Threads: 1
+... Memory Threads: 1
+... Warm Interval: 1 minutes
+... Cool Interval: 1 minutes
+... Stress Interval: 1 minutes
+... Rest Interval: 1 minutes
+... Randomized Stress Interval(s): False
+... Randomized Rest Interval(s): False
+
+Starting warm up interval ...
+... Start Time: 10/30/2024 11:55:12 AM
+... End Time: 10/30/2024 11:56:12 AM
+... Duration: 1 minutes
+... Interval will complete in 1 minute(s) ...
+... Interval complete.
+
+Starting stress/rest interval cycle ...
+... Start Time: 10/30/2024 11:56:12 AM
+... End Time: 10/30/2024 12:01:12 PM
+... Duration: 5 minutes
+
+Starting stress interval ...
+... Start Time: 10/30/2024 11:56:12 AM
+... End Time: 10/30/2024 11:57:12 AM
+... Duration: 1 minutes
+... CPU Threads: 1
+... Memory Threads: 1
+
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+Starting the web server ...
+... Web server started on port 8899.
+
+Starting the web server ...
+... Web server started on port 8899.
+
+The healthz responses have been set to service unavailable (503).
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The healthz responses have been set to service unavailable (503).
+
+The healthz responses have been set to service unavailable (503).
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.
+
+The Webserver preset was used to initialize this container.
+
+Starting the web server ...
+... Web server started on port 80.

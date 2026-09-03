@@ -1,5 +1,4 @@
-function Write-Info
-{
+function Write-Info {
     <#
     .SYNOPSIS
         Writes a formatted status message to the console.
@@ -59,6 +58,10 @@ function Write-Info
     .PARAMETER NoLog
         OPTIONAL. Switch. Alias: -nl. Writes to the console only, and skips the log file.
 
+    .PARAMETER LogFiles
+        OPTIONAL. Array of String. Alias: -f. Determines what log files to write to. The application log is the
+        default log. Options are: (a)pp, (m)sg, (u)sr, (d)bg.
+
     .PARAMETER PSCustomObject
         OPTIONAL. Switch. Alias: -co. A PSCustomObject which will have all properties written.
 
@@ -104,13 +107,41 @@ function Write-Info
         [Alias('ds')] [switch]         $DoubleSpace,
         [Alias('ps')] [switch]         $PreSpace,
         [Alias('nl')] [switch]         $NoLog,
+
+        [Parameter()]
+        [ValidateSet('app','msg','usr','dbg','a','m','u','d')]
+        [Alias('f')]  [string[]]       $LogFiles = 'app',
+
         [Alias('co')] [PSCustomObject] $PSCustomObject
     )
 
-    process
-    {
-        if ( [String]::IsNullOrEmpty($Type) )
-        {
+    process {
+
+        [string[]] $logFilePaths = $LogFiles | ForEach-Object {
+            switch ( $_ ) {
+                'msg'   { $PS.path.msgLog }
+                'm'     { $PS.path.msgLog }
+                'usr'   { $PS.path.usrLog }
+                'u'     { $PS.path.usrLog }
+                'dbg'   { $PS.path.dbgLog }
+                'd'     { $PS.path.dbgLog }
+                default { $PS.path.appLog }
+            }
+        }
+
+        # [string[]] $htmlFilePaths = $LogFiles | ForEach-Object {
+        #     switch ( $_ ) {
+        #         'msg'   { $PS.path.msgLogHtml }
+        #         'm'     { $PS.path.msgLogHtml }
+        #         'usr'   { $PS.path.usrLogHtml }
+        #         'u'     { $PS.path.usrLogHtml }
+        #         'dbg'   { $PS.path.dbgLogHtml }
+        #         'd'     { $PS.path.dbgLogHtml }
+        #         default { $PS.path.appLogHtml }
+        #     }
+        # }
+
+        if ( [String]::IsNullOrEmpty($Type) ) {
             $Type = if     ( $Header      )  { 'Header'  }
                     elseif ( $Process     )  { 'Process' }
                     elseif ( $Success     )  { 'Success' }
@@ -119,8 +150,7 @@ function Write-Info
                     else                     { 'Info'    }
         }
 
-        switch ( $Type )
-        {
+        switch ( $Type ) {
             "Process" { $MessageColor = "Cyan"    }
             "Header"  { $MessageColor = "Magenta" }
             "Info"    { $MessageColor = "Gray"    }
@@ -130,8 +160,7 @@ function Write-Info
             default   { $MessageColor = "Gray"    }
         }
 
-        if ( $Labels )
-        {
+        if ( $Labels ) {
             switch ( $Type )
             {
                 'Success'  { $Message = $( "SUCCESS: {0}" -f $Message ) }
@@ -162,13 +191,17 @@ function Write-Info
 
         if ( -not $NoLog ) {
 
-            if ( $PreSpace ) { '' | Out-File $WS_APP_LOG_PATH -Append }
+            foreach ( $logFilePath in $logFilePaths ) {
 
-            $Message | Out-File $WS_APP_LOG_PATH -Append
+                if ( $PreSpace ) { '' | Out-File $logFilePath -Append }
 
-            if ( $PSCustomObject ) { $PSCustomObject.GetEnumerator() | Sort-Object Name | Out-File $WS_APP_LOG_PATH -Append }
+                $Message | Out-File $logFilePath -Append
 
-            if ( $DoubleSpace ) { '' | Out-File $WS_APP_LOG_PATH -Append }
+                if ( $PSCustomObject ) { $PSCustomObject.GetEnumerator() | Sort-Object Name | Out-File $logFilePath -Append }
+
+                if ( $DoubleSpace ) { '' | Out-File $logFilePath -Append }
+
+            }
 
         }
     }

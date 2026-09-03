@@ -1,0 +1,73 @@
+<div class="item-card">
+
+<p style="margin-left: 1.5rem;">
+    psPodTester is a PowerShell 7 module for testing container deployments.</br>
+        - GitHub Project: <a href="https://github.com/seabopo/psPodTester/blob/v2.x/README.md" target="_blank">github.com/seabopo/psPodTester/blob/v2.x/</a></br>
+        - Docker Images: <a href="https://hub.docker.com/repository/docker/seabopo/pspodtester" target="_blank">hub.docker.com/repository/docker/seabopo/pspodtester</a></br>
+</p></br>
+
+<h4>Session Information</h4></br>
+
+    <p style="margin-left: 1.5rem;">
+        <b>Container</b></br>
+        View container debugging information and environment variables.</br>
+        Add custom information by setting "PSPOD_INFO_CUSTOMNAME" environment variables.</br></br>
+        Example:
+        <pre>
+                env:
+                - name: PSPOD_INFO_NODE_IP
+                valueFrom:
+                    fieldRef:
+                    fieldPath: status.hostIP
+                - name: PSPOD_INFO_POD_IP
+                valueFrom:
+                    fieldRef:
+                    fieldPath: status.podIP
+                - name: PSPOD_INFO_POD_NAME
+                valueFrom:
+                    fieldRef:
+                    fieldPath: metadata.name
+        </pre>
+    </p>
+
+    <p style="margin-left: 1.5rem;">
+        <b>Request Information</b></br>
+        View user request information.</br>
+            - Clicking the button shows the request headers for this application.</br>
+            - Send a GET or POST to /echo to view all of the properties.</br>
+    </p></br>
+
+<h4>Logs</h4></br>
+
+    <p style="margin-left: 1.5rem;">
+        <b>Application</b></br>
+        View the application console logs (startup, tests progress, etc.).</br>
+    </p></br>
+
+    <p style="margin-left: 1.5rem;">
+        <b>User Requests</b></br>
+        View the user requests to the pod.</br>
+        This shows both real user and healthz requests.</br>
+    </p></br>
+
+    <p style="margin-left: 1.5rem;">
+        <b>Message Service</b></br>
+        If the message service is enabled this will show every automatically generated console test message.</br>
+        The send rate and a custom log message can be configured via environment variables. </br>
+    </p></br>
+
+<h4>Tests</h4></br>
+
+    <p style="margin-left: 1.5rem;">
+        Tests must be enabled in the pod deployment configuration (they are disabled by default) and are only
+        available to users whose IP addresses are in the defined admin CIDR.
+    </p></br>
+
+    <p style="margin-left: 1.5rem;">
+        <b>Connectivity</b></br>
+        View the application console logs (startup, tests progress, etc.).</br>
+    </p></br>
+
+
+
+</div><!-- item-card -->

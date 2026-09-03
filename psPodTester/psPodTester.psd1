@@ -12,13 +12,13 @@
 RootModule = 'psPodTester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1'
+ModuleVersion = '2.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = 'c350bbd2-acd4-4d80-a1a6-da43de72c949'
+GUID = '08e07459-1895-4c0a-800f-348848d80eae'
 
 # Author of this module
 Author = 'seabopo (Sean Powell)'
@@ -27,7 +27,7 @@ Author = 'seabopo (Sean Powell)'
 CompanyName = ''
 
 # Copyright statement for this module
-Copyright = '(c) seabopo (Sean Powell). All rights reserved.'
+Copyright = '(c) seabopo (Sean Powell). MIT License.'
 
 # Description of the functionality provided by this module
 # Description = ''
@@ -96,19 +96,19 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+          Tags = @('PowerShell','Webserver','Container','Docker','Kubernetes')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+          LicenseUri = 'https://github.com/seabopo/psPodTester/blob/v2.x/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+          ProjectUri = 'https://github.com/seabopo/psPodTester/tree/v2.x'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Initial module release.'
+          ReleaseNotes = 'Initial module release.'
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -124,7 +124,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-# HelpInfoURI = ''
+  HelpInfoURI = 'https://github.com/seabopo/psPodTester/blob/v2.x/README.md'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''

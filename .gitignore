@@ -1,2 +1,5 @@
-psPodTester/http/*.log
 .github/workflows/build-and-publish-docker-images-with1809.yml
+.github/.DS_Store
+.DS_Store
+psPodTester/http/*.log
+@scratch/*
