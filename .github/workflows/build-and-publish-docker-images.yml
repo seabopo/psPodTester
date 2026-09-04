@@ -42,6 +42,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Restart Docker Service
+        # Works around a known windows-2022/windows-2025 runner issue where the Docker service can fail to
+        # create its Hyper-V virtual switch on boot ("hnsCall failed ... system cannot find the file specified"),
+        # leaving the docker_engine named pipe unreachable. Restarting the service reliably clears it.
+        # https://github.com/actions/runner-images/issues/13729
+        shell: powershell
+        run: Restart-Service -Name docker -Force
       - name: Build and Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v7
         with:
@@ -62,6 +69,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Restart Docker Service
+        # See windows2022 job above for why this is here.
+        # https://github.com/actions/runner-images/issues/13729
+        shell: powershell
+        run: Restart-Service -Name docker -Force
       - name: Build and Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v7
         with:
@@ -146,25 +158,30 @@ jobs:
       always() &&
       needs.windows2022.result == 'success' &&
       needs.windows2025.result == 'success'
-    runs-on: windows-2022
+    # Combining manifests is pure registry-API metadata work - it doesn't build or emulate anything - so this
+    # doesn't need a Windows runner. It runs on ubuntu-latest specifically because `docker manifest create` can't
+    # amend a manifest list (which `noble`/`azurelinux3.0` are, being multi-arch buildx builds - see below), and
+    # `docker buildx imagetools create` (which can) needs a reliably current buildx, same as the macos/linux jobs.
+    runs-on: ubuntu-latest
     steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: BUILD latest
-        shell: pwsh
+      - name: BUILD and PUSH latest
+        shell: bash
         run: |
-          $win2022 = "seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}"
-          $win2025 = "seabopo/pspodtester:nanoserver-ltsc2025-${{ env.RELEASE }}"
-          $noble   = "seabopo/pspodtester:noble-${{ env.RELEASE }}"
-
-          if ( "${{ needs.getReleaseVersion.outputs.is_v2_plus }}" -eq "true" ) {
-              docker manifest create seabopo/pspodtester:latest --amend $win2022 --amend $win2025 --amend $noble
-          } else {
-              docker manifest create seabopo/pspodtester:latest --amend $win2022 --amend $win2025
-          }
+          refs=(
+            "seabopo/pspodtester:nanoserver-ltsc2022-${RELEASE}"
+            "seabopo/pspodtester:nanoserver-ltsc2025-${RELEASE}"
+          )
+          if [ "${IS_V2_PLUS}" = "true" ]; then
+            refs+=("seabopo/pspodtester:noble-${RELEASE}")
+          fi
+          echo "Combining: ${refs[*]}"
+          docker buildx imagetools create --tag seabopo/pspodtester:latest "${refs[@]}"
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
-      - name: PUSH latest
-        run: docker manifest push --purge seabopo/pspodtester:latest
+          IS_V2_PLUS: ${{ needs.getReleaseVersion.outputs.is_v2_plus }}
