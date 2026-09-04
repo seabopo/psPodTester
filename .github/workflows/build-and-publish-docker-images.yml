@@ -152,22 +152,19 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: BUILD and PUSH latest
+      - name: BUILD latest
         shell: pwsh
         run: |
-          Write-Host "--- docker buildx version ---"
-          docker buildx version
-
           $win2022 = "seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}"
           $win2025 = "seabopo/pspodtester:nanoserver-ltsc2025-${{ env.RELEASE }}"
           $noble   = "seabopo/pspodtester:noble-${{ env.RELEASE }}"
 
           if ( "${{ needs.getReleaseVersion.outputs.is_v2_plus }}" -eq "true" ) {
-              Write-Host "Combining: $win2022, $win2025, $noble"
-              docker buildx imagetools create --tag seabopo/pspodtester:latest $win2022 $win2025 $noble
+              docker manifest create seabopo/pspodtester:latest --amend $win2022 --amend $win2025 --amend $noble
           } else {
-              Write-Host "Combining: $win2022, $win2025"
-              docker buildx imagetools create --tag seabopo/pspodtester:latest $win2022 $win2025
+              docker manifest create seabopo/pspodtester:latest --amend $win2022 --amend $win2025
           }
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}
+      - name: PUSH latest
+        run: docker manifest push --purge seabopo/pspodtester:latest
