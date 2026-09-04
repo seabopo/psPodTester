@@ -1,0 +1,51 @@
+
+#
+# NOTES:
+#   Base Image:    mcr.microsoft.com/dotnet/sdk:10.0-nanoserver-ltsc2025 (Windows Server 2025 / nanoserver)
+#   Application:   https://github.com/seabopo/psPodTester
+#   Module Source: https://github.com/seabopo/psPodTester/releases/download/v2.0.0/psPodTester_v1.0.0.zip
+#
+#   Notes:
+#   - Microsoft dropped PowerShell images so not the .NET SDK is the only pre-built powershell image.
+#   - Put the app in a subdirectory to avoid security errors during installation.
+#   - Variables are fed from the BuildTasks section of the ado-pipeline.yml file.
+#
+
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0-nanoserver-ltsc2025
+
+FROM ${BASE_IMAGE}
+
+ARG APP_VERSION=v2.0.0
+
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+RUN Write-Host "Application Version: $($env:APP_VERSION)"; \
+    Write-Host "URI: https://github.com/seabopo/psPodTester/releases/download/$($env:APP_VERSION)/psPodTester_$($env:APP_VERSION).zip"; \
+    New-Item \
+        -ItemType directory \
+        -Path "/psPodTester"; \
+        Invoke-WebRequest \
+        -Uri "https://github.com/seabopo/psPodTester/releases/download/$($env:APP_VERSION)/psPodTester_$($env:APP_VERSION).zip" \
+        -OutFile "/psPodTester/psPodTester.zip"; \
+    Expand-Archive \
+        -Path "/psPodTester/psPodTester.zip" \
+        -DestinationPath "/" \
+        -Force; \
+    Remove-Item \
+        -Path "/psPodTester/psPodTester.zip" \
+        -Force;
+
+USER ContainerAdministrator
+
+ENTRYPOINT ["pwsh.exe"]
+
+CMD [ "-File", "C:/psPodTester/docker.ps1" ]
+
+LABEL org.opencontainers.image.title="psPodTester" \
+      org.opencontainers.image.description="A PowerShell module to test container deployments." \
+      org.opencontainers.image.documentation="https://github.com/seabopo/psPodTester" \
+      org.opencontainers.image.base.name="${BASE_IMAGE}" \
+      org.opencontainers.image.version="${APP_VERSION}" \
+      org.opencontainers.image.url="https://hub.docker.com/r/seabopo/pspodtester" \
+      org.opencontainers.image.vendor="seabopo" \
+      org.opencontainers.image.authors="seabopo @ GitHub"

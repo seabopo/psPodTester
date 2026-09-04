@@ -40,11 +40,13 @@ function Start-PodTesterServices {
                   Start-Messaging
               }
               $argList = "-command (Invoke-Command -ScriptBlock {$cmd} -ArgumentList $($PS.path.moduleRoot))"
-              $PS.messages.pid = ( Start-Process -FilePath "pwsh" -ArgumentList $argList -PassThru ).id
+              $psi = [System.Diagnostics.ProcessStartInfo]::new('pwsh', $argList)
+              $psi.UseShellExecute = $false
+              $PS.messages.pid = [System.Diagnostics.Process]::Start($psi).Id
               $env:PSPOD_MSGS_PID = $PS.messages.PID
 
           } elseif ( -not $PS.messages.enabled ) {
-              Write-Info -f a,m -ps -ps -m $PS.usrmsg.msg.noenabled
+              Write-Info -f a,m -ps -m $PS.usrmsg.msg.noenabled
           }
 
         # Let the message service start.
@@ -63,7 +65,9 @@ function Start-PodTesterServices {
               $argList = "-command (Invoke-Command -ScriptBlock {$cmd} -ArgumentList $($PS.path.moduleRoot))"
 
               if ( $PS.env.userCanRunWS ) {
-                  $PS.webServer.PID = ( Start-Process -FilePath "pwsh" -ArgumentList $argList -PassThru ).id
+                  $psi = [System.Diagnostics.ProcessStartInfo]::new('pwsh', $argList)
+                  $psi.UseShellExecute = $false
+                  $PS.webServer.PID = [System.Diagnostics.Process]::Start($psi).Id
                   $env:PSPOD_WEBS_PID = $PS.webServer.PID
               }
               elseif ( $isWindows -and $PS.env.userCanRunAs -and -not $PS.env.userCanRunWS ) {
