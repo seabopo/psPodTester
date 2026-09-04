@@ -163,6 +163,6 @@ jobs:
               $refs += "seabopo/pspodtester:noble-${{ env.RELEASE }}"
           }
           Write-Host "Combining: $($refs -join ', ')"
-          docker buildx imagetools create -t seabopo/pspodtester:latest @refs
+          docker buildx imagetools create --tag seabopo/pspodtester:latest @refs
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}

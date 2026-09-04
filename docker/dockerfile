@@ -15,6 +15,7 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE}
 
+ARG BASE_IMAGE
 ARG APP_VERSION=v2.0.0
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]

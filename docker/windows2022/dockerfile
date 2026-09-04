@@ -15,6 +15,7 @@ ARG BASE_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0-nanoserver-ltsc2022
 
 FROM ${BASE_IMAGE}
 
+ARG BASE_IMAGE
 ARG APP_VERSION=v2.0.0
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
