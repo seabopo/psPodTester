@@ -6,11 +6,13 @@ psPodTester is a PowerShell 7 module to test container deployments.
  - A web server for:
      - An ingress testing destination.
      - Viewing the HTTP Request headers of a GET request.
-     - Viewing the HTTP Request headers and body of a POST request.
+     - Echoing the HTTP Request properties of a GET or POST.
      - Viewing environment and debugging information.
      - Running network connectivity tests.
  - A message service to validate container logging.
- - Custom CPU and Memory stress tests (without the web server).
+
+  Note: the icons used by the web application are freely provided by 
+ [IconScout](https://iconscout.com/) from their [Unicons](https://iconscout.com/unicons) collection.
 
 
 ## Presets
