@@ -155,14 +155,19 @@ jobs:
       - name: BUILD and PUSH latest
         shell: pwsh
         run: |
-          $refs = @(
-            "seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}",
-            "seabopo/pspodtester:nanoserver-ltsc2025-${{ env.RELEASE }}"
-          )
+          Write-Host "--- docker buildx version ---"
+          docker buildx version
+
+          $win2022 = "seabopo/pspodtester:nanoserver-ltsc2022-${{ env.RELEASE }}"
+          $win2025 = "seabopo/pspodtester:nanoserver-ltsc2025-${{ env.RELEASE }}"
+          $noble   = "seabopo/pspodtester:noble-${{ env.RELEASE }}"
+
           if ( "${{ needs.getReleaseVersion.outputs.is_v2_plus }}" -eq "true" ) {
-              $refs += "seabopo/pspodtester:noble-${{ env.RELEASE }}"
+              Write-Host "Combining: $win2022, $win2025, $noble"
+              docker buildx imagetools create --tag seabopo/pspodtester:latest $win2022 $win2025 $noble
+          } else {
+              Write-Host "Combining: $win2022, $win2025"
+              docker buildx imagetools create --tag seabopo/pspodtester:latest $win2022 $win2025
           }
-          Write-Host "Combining: $($refs -join ', ')"
-          docker buildx imagetools create --tag seabopo/pspodtester:latest @refs
         env:
           RELEASE: ${{ needs.getReleaseVersion.outputs.release_version }}

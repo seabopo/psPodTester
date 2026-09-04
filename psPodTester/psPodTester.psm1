@@ -9,13 +9,13 @@
     $ErrorActionPreference = "Stop"
 
   # Load all public functions
-    Get-ChildItem -Path "$($PSScriptRoot)/Public/*.ps1" -Recurse | ForEach-Object { . $($_.FullName) }
+    Get-ChildItem -Path "$($PSScriptRoot)/public/*.ps1" -Recurse | ForEach-Object { . $($_.FullName) }
 
   # Export all the public functions and aliases
     Export-ModuleMember -Function * -Alias *
 
   # Load all private functions
-    Get-ChildItem -Path "$($PSScriptRoot)/Private/*.ps1" -Recurse | ForEach-Object { . $($_.FullName) }
+    Get-ChildItem -Path "$($PSScriptRoot)/private/*.ps1" -Recurse | ForEach-Object { . $($_.FullName) }
 
   # Update the Environment Variables based on any presets that were found.
     Set-EnvironmentPresets
