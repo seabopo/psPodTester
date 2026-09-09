@@ -1,20 +1,23 @@
 
 #
 # NOTES:
-#   Base Image:    mcr.microsoft.com/powershell:lts-nanoserver-ltsc2022
-#                  mcr.microsoft.com/powershell:lts-nanoserver-1809
-#                  mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-ltsc2022
-#                  mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809
+#   Base Image:    mcr.microsoft.com/dotnet/sdk:10.0-noble (Linux/Ubuntu - Docker Desktop on macOS only runs
+#                  Linux containers, so this uses a Linux base image rather than a Windows one).
 #   Application:   https://github.com/seabopo/psPodTester
-#   Module Source: https://github.com/seabopo/psPodTester/releases/download/v1.1.2/psPodTester_v1.1.2.zip
-#   Put the app in a subdirectory to avoid security errors during installation.
+#   Module Source: https://github.com/seabopo/psPodTester/releases/download/v2.0.0/psPodTester_v1.0.0.zip
+#
+#   Notes:
+#   - Microsoft dropped PowerShell images so not the .NET SDK is the only pre-built powershell image.
+#   - Put the app in a subdirectory to avoid security errors during installation.
+#   - Variables are fed from the BuildTasks section of the ado-pipeline.yml file.
 #
 
-ARG BASE_IMAGE
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0-noble
 
 FROM ${BASE_IMAGE}
 
-ARG APP_VERSION=v1.2.0
+ARG BASE_IMAGE
+ARG APP_VERSION=v2.0.4
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -34,14 +37,12 @@ RUN Write-Host "Application Version: $($env:APP_VERSION)"; \
         -Path "/psPodTester/psPodTester.zip" \
         -Force;
 
-USER ContainerAdministrator
+ENTRYPOINT ["pwsh"]
 
-ENTRYPOINT ["pwsh.exe"]
-
-CMD [ "-File", "C:/psPodTester/docker.ps1" ]
+CMD [ "-File", "/psPodTester/docker.ps1" ]
 
 LABEL org.opencontainers.image.title="psPodTester" \
-      org.opencontainers.image.description="A PowerShell module to test Windows container deployments." \
+      org.opencontainers.image.description="A PowerShell module to test container deployments." \
       org.opencontainers.image.documentation="https://github.com/seabopo/psPodTester" \
       org.opencontainers.image.base.name="${BASE_IMAGE}" \
       org.opencontainers.image.version="${APP_VERSION}" \
