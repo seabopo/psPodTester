@@ -1,3 +1,4 @@
+# Zips up the latest module release files and attaches it to the release version.
 
 name: Package and Upload Release Asset
 
