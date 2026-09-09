@@ -1,3 +1,9 @@
+# Builds and publishes docker images for the following:
+#   - Windows Server 2022
+#   - Windows Server 2025
+#   - MacOS/Linux (Ubuntu Noble, Arm & Intel)
+#   - MacOS/Linux (Azure Linux, Arm & Intel)
+#   - A multi-arch manifest.
 
 name: Build and Publish Docker 2019 and 2022 Images
 
