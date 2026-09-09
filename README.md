@@ -81,7 +81,7 @@ env:
   value: "MyTestApp"
 - name: PSPOD_PRESET_Webserver
   value: "1"
-- name: PSPOD_TEST_ShowPodInfo
+- name: PSPOD_WEBS_ShowPodInfo
   value: "1"
 - name: PSPOD_INFO_NODE_IP
   valueFrom:
