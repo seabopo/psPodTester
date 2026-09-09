@@ -5,7 +5,7 @@
 #   - MacOS/Linux (Azure Linux, Arm & Intel)
 #   - A multi-arch manifest.
 
-name: Build and Publish Docker 2019 and 2022 Images
+name: Build and Publish Docker Images
 
 on:
   workflow_dispatch:
